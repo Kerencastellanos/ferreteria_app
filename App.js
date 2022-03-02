@@ -1,10 +1,28 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import axios from "axios";
+import { StatusBar } from "expo-status-bar";
+import { useState } from "react";
+import { Button, StyleSheet, Text, View } from "react-native";
 
 export default function App() {
+  const [numero, setNumero] = useState(0);
+
+  function incrementar() {
+    setNumero(numero + 1);
+  }
+  const [respuesta, setRespuesta] = useState({});
+  async function login() {
+    const { data } = await axios.post("http://localhost:3000/api/login");
+    setRespuesta(data);
+  }
   return (
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
+      <Text>{numero}</Text>
+      <Button onPress={incrementar} title="incrementar numero" />
+
+      <Button onPress={() => alert("Hola mundo")} title="Hola" />
+      <Text>{JSON.stringify()}</Text>
+      <Button onPress={login} title="login" />
+
       <StatusBar style="auto" />
     </View>
   );
@@ -13,8 +31,8 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
