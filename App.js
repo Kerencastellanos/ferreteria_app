@@ -2,6 +2,7 @@ import axios from "axios";
 import { StatusBar } from "expo-status-bar";
 import { useState } from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
+export const api_url = "https://ferreteria-movil.herokuapp.com/api";
 
 export default function App() {
   const [numero, setNumero] = useState(0);
