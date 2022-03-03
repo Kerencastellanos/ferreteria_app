@@ -18,9 +18,10 @@ export default function App() {
     <View style={styles.container}>
       <Text>{numero}</Text>
       <Button onPress={incrementar} title="incrementar numero" />
+      <Text></Text>
 
       <Button onPress={() => alert("Hola mundo")} title="Hola" />
-      <Text>{JSON.stringify()}</Text>
+      <Text>{JSON.stringify(respuesta)}</Text>
       <Button onPress={login} title="login" />
 
       <StatusBar style="auto" />
