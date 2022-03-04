@@ -4,6 +4,9 @@ import { useState } from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
 export const api_url = "https://ferreteria-movil.herokuapp.com/api";
 
+// import axios from "axios";
+// axios.get(api_url + "/auth/me");
+
 export default function App() {
   const [numero, setNumero] = useState(0);
 
