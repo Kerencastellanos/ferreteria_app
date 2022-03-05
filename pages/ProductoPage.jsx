@@ -12,6 +12,11 @@ import { EvilIcons } from "@expo/vector-icons";
 import { useLayoutEffect } from "react";
 const screen = Dimensions.get("window");
 export function ProductoPage({ route, navigation }) {
+  function Comprar() {
+   if (true){
+     navigation.navigate('Login')
+   } 
+  }
   const { nombre, descripcion, stock, precio, imagenes } = route.params;
   const IrACarrito = () => {
     navigation.navigate("Cart");
@@ -45,7 +50,7 @@ export function ProductoPage({ route, navigation }) {
         <Text> {descripcion}</Text>
         <Text style={styles.precio}>Lps.{precio}</Text>
         <Text>Disponibles: {stock}</Text>
-        <TouchableOpacity style={styles.btn}>
+        <TouchableOpacity onPress={Comprar} style={styles.btn}>
           <Text style={styles.white}>Comprar</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.btnOutline}>
