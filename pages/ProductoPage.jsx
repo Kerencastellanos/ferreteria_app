@@ -13,9 +13,9 @@ import { useLayoutEffect } from "react";
 const screen = Dimensions.get("window");
 export function ProductoPage({ route, navigation }) {
   function Comprar() {
-   if (true){
-     navigation.navigate('Login')
-   } 
+    if (true) {
+      navigation.navigate("Login");
+    }
   }
   const { nombre, descripcion, stock, precio, imagenes } = route.params;
   const IrACarrito = () => {
@@ -24,7 +24,7 @@ export function ProductoPage({ route, navigation }) {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <TouchableOpacity onPress={IrACarrito}>
+        <TouchableOpacity style={{ marginEnd: 10 }} onPress={IrACarrito}>
           <EvilIcons name="cart" size={24} color="black" />
         </TouchableOpacity>
       ),
