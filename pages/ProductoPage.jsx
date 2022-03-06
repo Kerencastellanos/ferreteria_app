@@ -35,6 +35,7 @@ export function ProductoPage({ route, navigation }) {
   }
 
   function Comprar() {
+    addToCart();
     if (true) {
       navigation.navigate("Login");
     }
