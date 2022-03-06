@@ -2,16 +2,23 @@ import { FlatList, StyleSheet } from "react-native";
 import { useEffect, useState, useContext } from "react";
 import { View, Text, TextInput, Image, TouchableOpacity } from "react-native";
 //import { Input, CheckBox, Image, Text } from "react-native-elements";
-import { Buscador, Producto } from "../components";
 import axios from "axios";
 import { api_url } from "../constantes";
 
 
 export function Login() {
-    /*const [Usuario, setUsuario] = useState(null)
-    const [Contraseña, setContraseña] = useState(null)
-    const { signIn } = useContext(AuthContext)
-
+    function enviarDatos(){
+        const {data}= await axios.post(api_url+"/auth/login",{correo,clave})
+        if(data.error){
+            alert(data.error)
+            return
+        }
+        
+    } 
+    const [correo, setCorreo] = useState("")
+    const [clave, setClave] = useState("")
+    
+    /*
     const [ocultarPass, setOcultarPass] = useState(true)
 
     //Función del login que llamo de la navegación
@@ -34,10 +41,10 @@ export function Login() {
         <Text style={styles.logoText}>Login Bienvenido</Text>
         
         <TextInput style={styles.inputBox} underlineColorAndroid='rgb(0,0,0,0)' 
-        placeholder="Correo" placeholderTextColor="#4b4b4b"></TextInput>
+        placeholder="Correo" value={correo} onChangeText={setCorreo} placeholderTextColor="#4b4b4b"></TextInput>
         
         <TextInput style={styles.inputBox} underlineColorAndroid='rgb(0,0,0,0)' 
-        placeholder="Clave" secureTextEntry={true} placeholderTextColor="#4b4b4b"></TextInput>
+        placeholder="Clave" secureTextEntry={true} value={clave} onChangeText={setClave} placeholderTextColor="#4b4b4b"></TextInput>
 
         <Text style={styles.txt}>¿Olvide mi contraseña?</Text>
         
