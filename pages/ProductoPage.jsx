@@ -11,6 +11,7 @@ import { EvilIcons } from "@expo/vector-icons";
 import { ListaProductos, MyImageSlider } from "../components";
 import { api_url } from "../constantes";
 import { useState, useEffect } from "react";
+import axios from "axios";
 const screen = Dimensions.get("window");
 
 export function ProductoPage({ route, navigation }) {

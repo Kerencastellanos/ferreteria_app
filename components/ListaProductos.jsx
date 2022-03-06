@@ -9,8 +9,10 @@ export function ListaProductos({ prods = [], horizontal = false }) {
         horizontal={horizontal}
         data={prods}
         keyExtractor={(item) => item.id}
-        ItemSeparatorComponent={Line}
-        renderItem={({ item }) => <Producto producto={item} />}
+        ItemSeparatorComponent={!horizontal && Line}
+        renderItem={({ item }) => (
+          <Producto mini={horizontal} producto={item} />
+        )}
       />
     </View>
   );
