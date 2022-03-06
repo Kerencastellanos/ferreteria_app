@@ -1,11 +1,23 @@
 import { TouchableOpacity, Image, StyleSheet, Text, View } from "react-native";
+import { useEffect } from "react";
+import { useNavigation } from "@react-navigation/native";
 
 export function Producto({
-  onPress,
   producto: { nombre, descripcion, stock, precio, imagenes },
 }) {
+  const navigation = useNavigation();
+
+  function verProducto() {
+    navigation.navigate("Producto", {
+      nombre,
+      descripcion,
+      stock,
+      precio,
+      imagenes,
+    });
+  }
   return (
-    <TouchableOpacity onPress={onPress} style={styles.container}>
+    <TouchableOpacity onPress={verProducto} style={styles.container}>
       <Image source={{ uri: imagenes[0].url }} style={styles.img} />
       <View style={styles.info}>
         <Text>{nombre}</Text>

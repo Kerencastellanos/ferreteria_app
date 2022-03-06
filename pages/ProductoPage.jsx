@@ -6,18 +6,37 @@ import {
   Text,
   View,
 } from "react-native";
-import Slideshow from "react-native-image-slider-show";
 import { useLayoutEffect } from "react";
 import { EvilIcons } from "@expo/vector-icons";
+import { ListaProductos, MyImageSlider } from "../components";
+import { api_url } from "../constantes";
+import { useState, useEffect } from "react";
 const screen = Dimensions.get("window");
 
 export function ProductoPage({ route, navigation }) {
+  const { nombre, descripcion, stock, precio, imagenes, categoria } =
+    route.params;
+
+  useEffect(() => {
+    obtenerProds();
+  }, []);
+
+  const [prodsCategoria, setProdsCategoria] = useState([]);
+
+  async function obtenerProds() {
+    const { data } = await axios.get(
+      api_url + `/productos?categoria=${categoria.nombre}`
+    );
+    if (data.length) {
+      setProdsCategoria(data);
+    }
+  }
+
   function Comprar() {
     if (true) {
       navigation.navigate("Login");
     }
   }
-  const { nombre, descripcion, stock, precio, imagenes } = route.params;
   const IrACarrito = () => {
     navigation.navigate("Cart");
   };
@@ -32,8 +51,7 @@ export function ProductoPage({ route, navigation }) {
   }, []);
   return (
     <ScrollView>
-      <Slideshow dataSource={imagenes} />
-
+      <MyImageSlider images={[...imagenes, ...imagenes, ...imagenes]} />
       <View style={styles.info}>
         <Text style={styles.nombre}> {nombre}</Text>
         <Text> {descripcion}</Text>
@@ -45,6 +63,10 @@ export function ProductoPage({ route, navigation }) {
         <TouchableOpacity style={styles.btnOutline}>
           <Text style={styles.purple}>Agregar al Carrito</Text>
         </TouchableOpacity>
+      </View>
+      <View>
+        <Text style={styles.nombre}>Productos Relacionados </Text>
+        <ListaProductos horizontal={true} prods={prodsCategoria} />
       </View>
     </ScrollView>
   );
@@ -62,8 +84,12 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
   },
+  relacionados: {
+    margin: 10,
+  },
   nombre: {
     fontSize: 20,
+    margin: 10,
   },
   precio: {
     marginBottom: 15,
