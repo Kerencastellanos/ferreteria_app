@@ -1,18 +1,34 @@
 import { TouchableOpacity, Image, StyleSheet, Text, View } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { defaultImage } from "../constantes";
 
-export function Producto({
-  onPress,
-  producto: { nombre, descripcion, stock, precio, imagenes },
-}) {
+export function Producto({ mini = false, producto }) {
+  const navigation = useNavigation();
+  const { nombre, descripcion, stock, precio, imagenes, categoria } = producto;
+  function verProducto() {
+    navigation.navigate("Producto", producto);
+  }
   return (
-    <TouchableOpacity onPress={onPress} style={styles.container}>
-      <Image source={{ uri: imagenes[0].imagenUrl }} style={styles.img} />
-      <View style={styles.info}>
+    <TouchableOpacity
+      onPress={verProducto}
+      style={[styles.container, mini ? { flexDirection: "column" } : {}]}
+    >
+      <Image
+        source={{
+          uri: imagenes.length ? imagenes[0].url : defaultImage,
+        }}
+        style={styles.img}
+      />
+      {!mini ? (
+        <View style={styles.info}>
+          <Text>{nombre}</Text>
+          <Text> {descripcion}</Text>
+          <Text style={styles.precio}>Lps.{precio}</Text>
+          <Text>Disponibles: {stock}</Text>
+        </View>
+      ) : (
         <Text>{nombre}</Text>
-        <Text> {descripcion}</Text>
-        <Text style={styles.precio}>Lps.{precio}</Text>
-        <Text>Disponibles: {stock}</Text>
-      </View>
+      )}
     </TouchableOpacity>
   );
 }
@@ -21,6 +37,7 @@ const styles = StyleSheet.create({
     margin: 5,
     padding: 5,
     flexDirection: "row",
+    alignItems: "center",
   },
   img: {
     width: 150,

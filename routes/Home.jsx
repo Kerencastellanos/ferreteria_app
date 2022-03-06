@@ -8,11 +8,11 @@ const Drawer = createDrawerNavigator();
 export function Home() {
   return (
     <Drawer.Navigator drawerContent={(props) => <CustomDrawer {...props} />}>
-      <Drawer.Screen name="Contacto" component={Contacto}/>
+      {/* <Drawer.Screen name="Contacto" component={Contacto}/> */}
       <Drawer.Screen
         options={({ navigation }) => ({
           headerTitle: () => <Logo />,
-          headerRight: ({ }) => (
+          headerRight: ({}) => (
             <TouchableOpacity
               onPress={() => {
                 navigation.navigate("Cart");
@@ -29,4 +29,3 @@ export function Home() {
     </Drawer.Navigator>
   );
 }
-

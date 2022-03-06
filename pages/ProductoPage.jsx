@@ -1,50 +1,58 @@
 import {
   ScrollView,
   TouchableOpacity,
-  Image,
   Dimensions,
   StyleSheet,
   Text,
   View,
 } from "react-native";
-import { EvilIcons } from "@expo/vector-icons";
-
-import { useLayoutEffect } from "react";
+import { CartIcon, ListaProductos, MyImageSlider } from "../components";
+import { api_url } from "../constantes";
+import { useState, useEffect, useContext, useLayoutEffect } from "react";
+import axios from "axios";
+import { CartContext } from "../context";
 const screen = Dimensions.get("window");
+
 export function ProductoPage({ route, navigation }) {
+  const { nombre, descripcion, stock, precio, imagenes, categoria } =
+    route.params;
+
+  const { cart, setCart } = useContext(CartContext);
+
+  useEffect(() => {
+    obtenerProds();
+  }, []);
+
+  const [prodsCategoria, setProdsCategoria] = useState([]);
+
+  async function obtenerProds() {
+    const { data } = await axios.get(
+      api_url + `/productos?categoria=${categoria.nombre}`
+    );
+    if (data.length) {
+      setProdsCategoria(data);
+    }
+  }
+
   function Comprar() {
     if (true) {
       navigation.navigate("Login");
     }
   }
-  const { nombre, descripcion, stock, precio, imagenes } = route.params;
-  const IrACarrito = () => {
-    navigation.navigate("Cart");
-  };
+
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerRight: () => (
-        <TouchableOpacity style={{ marginEnd: 10 }} onPress={IrACarrito}>
-          <EvilIcons name="cart" size={24} color="black" />
-        </TouchableOpacity>
-      ),
+      headerRight: CartIcon,
     });
   }, []);
+
+  function addToCart() {
+    setCart((items) => items.concat(route.params));
+  }
+
   return (
-    <View style={styles.container}>
-      <ScrollView
-        horizontal={true}
-        style={{}}
-        decelerationRate={"fast"}
-        snapToInterval={screen.width}
-        snapToAlignment="center"
-      >
-        <Image source={{ uri: imagenes[0].imagenUrl }} style={styles.img} />
-        <Image source={{ uri: imagenes[0].imagenUrl }} style={styles.img} />
-        <Image source={{ uri: imagenes[0].imagenUrl }} style={styles.img} />
-        <Image source={{ uri: imagenes[0].imagenUrl }} style={styles.img} />
-        <Image source={{ uri: imagenes[0].imagenUrl }} style={styles.img} />
-      </ScrollView>
+    <ScrollView>
+      <MyImageSlider images={[...imagenes, ...imagenes, ...imagenes]} />
       <View style={styles.info}>
         <Text style={styles.nombre}> {nombre}</Text>
         <Text> {descripcion}</Text>
@@ -53,11 +61,15 @@ export function ProductoPage({ route, navigation }) {
         <TouchableOpacity onPress={Comprar} style={styles.btn}>
           <Text style={styles.white}>Comprar</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.btnOutline}>
+        <TouchableOpacity onPress={addToCart} style={styles.btnOutline}>
           <Text style={styles.purple}>Agregar al Carrito</Text>
         </TouchableOpacity>
       </View>
-    </View>
+      <View>
+        <Text style={styles.nombre}>Productos Relacionados </Text>
+        <ListaProductos horizontal={true} prods={prodsCategoria} />
+      </View>
+    </ScrollView>
   );
 }
 
@@ -73,8 +85,12 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
   },
+  relacionados: {
+    margin: 10,
+  },
   nombre: {
     fontSize: 20,
+    margin: 10,
   },
   precio: {
     marginBottom: 15,
