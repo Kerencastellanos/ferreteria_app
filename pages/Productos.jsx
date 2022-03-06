@@ -1,4 +1,4 @@
-import { FlatList, StyleSheet, View } from "react-native";
+import { ActivityIndicator, FlatList, StyleSheet, View } from "react-native";
 import { useEffect, useState } from "react";
 import { Buscador, Producto } from "../components";
 import axios from "axios";
@@ -12,7 +12,7 @@ export function Productos({ navigation }) {
   const [productos, setProductos] = useState([]);
   const [prodsCopy, setProdsCopy] = useState([]);
   const [buscar, setBuscar] = useState("");
-
+  const [cargando, setCargando] = useState(true);
   useEffect(() => {
     SolicitarProds();
   }, []);
@@ -20,6 +20,7 @@ export function Productos({ navigation }) {
     const { data } = await axios.get(api_url + "/productos");
     setProductos(data);
     setProdsCopy(data);
+    setCargando(false);
   }
 
   useEffect(() => {
@@ -35,7 +36,13 @@ export function Productos({ navigation }) {
       navigation.navigate("Producto", prod);
     };
   }
-
+  if (cargando) {
+    return (
+      <View style={styles.center}>
+        <ActivityIndicator size="large" color={"#0000ff"} />
+      </View>
+    );
+  }
   return (
     <View style={styles.container}>
       <Buscador
@@ -60,6 +67,12 @@ export function Productos({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+  center: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#fff",
+  },
   container: {
     flex: 1,
     backgroundColor: "#fff",
