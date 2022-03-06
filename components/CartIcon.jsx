@@ -1,6 +1,7 @@
 import { EvilIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { TouchableOpacity, Text } from "react-native";
+import { useContext } from "react";
 import { CartContext } from "../context";
 
 export function CartIcon() {
