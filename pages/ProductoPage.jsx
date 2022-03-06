@@ -1,16 +1,16 @@
 import {
   ScrollView,
   TouchableOpacity,
-  Image,
   Dimensions,
   StyleSheet,
   Text,
   View,
 } from "react-native";
-import { EvilIcons } from "@expo/vector-icons";
-
+import Slideshow from "react-native-image-slider-show";
 import { useLayoutEffect } from "react";
+import { EvilIcons } from "@expo/vector-icons";
 const screen = Dimensions.get("window");
+
 export function ProductoPage({ route, navigation }) {
   function Comprar() {
     if (true) {
@@ -31,20 +31,9 @@ export function ProductoPage({ route, navigation }) {
     });
   }, []);
   return (
-    <View style={styles.container}>
-      <ScrollView
-        horizontal={true}
-        style={{}}
-        decelerationRate={"fast"}
-        snapToInterval={screen.width}
-        snapToAlignment="center"
-      >
-        <Image source={{ uri: imagenes[0].imagenUrl }} style={styles.img} />
-        <Image source={{ uri: imagenes[0].imagenUrl }} style={styles.img} />
-        <Image source={{ uri: imagenes[0].imagenUrl }} style={styles.img} />
-        <Image source={{ uri: imagenes[0].imagenUrl }} style={styles.img} />
-        <Image source={{ uri: imagenes[0].imagenUrl }} style={styles.img} />
-      </ScrollView>
+    <ScrollView>
+      <Slideshow dataSource={imagenes} />
+
       <View style={styles.info}>
         <Text style={styles.nombre}> {nombre}</Text>
         <Text> {descripcion}</Text>
@@ -57,7 +46,7 @@ export function ProductoPage({ route, navigation }) {
           <Text style={styles.purple}>Agregar al Carrito</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 

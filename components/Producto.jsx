@@ -6,7 +6,7 @@ export function Producto({
 }) {
   return (
     <TouchableOpacity onPress={onPress} style={styles.container}>
-      <Image source={{ uri: imagenes[0].imagenUrl }} style={styles.img} />
+      <Image source={{ uri: imagenes[0].url }} style={styles.img} />
       <View style={styles.info}>
         <Text>{nombre}</Text>
         <Text> {descripcion}</Text>
