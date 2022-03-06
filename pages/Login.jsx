@@ -4,15 +4,22 @@ import { View, Text, TextInput, Image, TouchableOpacity } from "react-native";
 //import { Input, CheckBox, Image, Text } from "react-native-elements";
 import axios from "axios";
 import { api_url } from "../constantes";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export function Login() {
-    function enviarDatos(){
+export function Login({navigation}) {
+    async function enviarDatos(){
         const {data}= await axios.post(api_url+"/auth/login",{correo,clave})
         if(data.error){
             alert(data.error)
             return
         }
-        
+        if (!data.accessToken || !data.refreshToken){
+            alert("Habido un error vuelva a intentar")
+            return
+        }
+        AsyncStorage.setItem('token', data.accessToken)
+        AsyncStorage.setItem('rToken', data.refreshToken)
+        navigation.navigate('Cart')
     } 
     const [correo, setCorreo] = useState("")
     const [clave, setClave] = useState("")
@@ -47,7 +54,7 @@ export function Login() {
 
       <Text style={styles.txt}>¿Olvide mi contraseña?</Text>
 
-      <TouchableOpacity style={styles.btn}>
+      <TouchableOpacity style={styles.btn} onPress={enviarDatos}>
         <Text style={styles.btnText}>Ingresar</Text>
       </TouchableOpacity>
 
