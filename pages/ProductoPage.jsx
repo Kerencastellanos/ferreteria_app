@@ -6,17 +6,18 @@ import {
   Text,
   View,
 } from "react-native";
-import { useLayoutEffect } from "react";
-import { EvilIcons } from "@expo/vector-icons";
-import { ListaProductos, MyImageSlider } from "../components";
+import { CartIcon, ListaProductos, MyImageSlider } from "../components";
 import { api_url } from "../constantes";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext, useLayoutEffect } from "react";
 import axios from "axios";
+import { CartContext } from "../context";
 const screen = Dimensions.get("window");
 
 export function ProductoPage({ route, navigation }) {
   const { nombre, descripcion, stock, precio, imagenes, categoria } =
     route.params;
+
+  const { cart, setCart } = useContext(CartContext);
 
   useEffect(() => {
     obtenerProds();
@@ -38,18 +39,17 @@ export function ProductoPage({ route, navigation }) {
       navigation.navigate("Login");
     }
   }
-  const IrACarrito = () => {
-    navigation.navigate("Cart");
-  };
+
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerRight: () => (
-        <TouchableOpacity style={{ marginEnd: 10 }} onPress={IrACarrito}>
-          <EvilIcons name="cart" size={24} color="black" />
-        </TouchableOpacity>
-      ),
+      headerRight: CartIcon,
     });
   }, []);
+
+  function addToCart() {
+    setCart((items) => items.concat(route.params));
+  }
+
   return (
     <ScrollView>
       <MyImageSlider images={[...imagenes, ...imagenes, ...imagenes]} />
@@ -61,7 +61,7 @@ export function ProductoPage({ route, navigation }) {
         <TouchableOpacity onPress={Comprar} style={styles.btn}>
           <Text style={styles.white}>Comprar</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.btnOutline}>
+        <TouchableOpacity onPress={addToCart} style={styles.btnOutline}>
           <Text style={styles.purple}>Agregar al Carrito</Text>
         </TouchableOpacity>
       </View>

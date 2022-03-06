@@ -5,3 +5,4 @@ export { Producto } from "./Producto";
 export { MyImageSlider } from "./MyImageSlider";
 export { Line } from "./Line";
 export { ListaProductos } from "./ListaProductos";
+export { CartIcon } from "./CartIcon";
