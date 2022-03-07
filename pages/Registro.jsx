@@ -1,53 +1,74 @@
-
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { useState } from "react";
-import { View, Text, TextInput, Image, TouchableOpacity,StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
 import { api_url } from "../constantes";
 
-export function Registro({navigation}){
-  function irALogin(){
-    navigation.navigate("Login")
+export function Registro({ navigation }) {
+  function irALogin() {
+    navigation.navigate("Login");
   }
-const [nombre,setNombre] = useState('')
-const [correo, setCorreo] = useState('')
-const [clave, setClave] = useState('')
-  async function crearUsuario(){
-    const {data} = await axios.post(api_url + '/auth/registro', {nombre,correo,clave})
-    if (data.error) {
-      alert (data.error)
-      return
+  const [nombre, setNombre] = useState("");
+  const [correo, setCorreo] = useState("");
+  const [clave, setClave] = useState("");
+  async function crearUsuario() {
+    try {
+      const { data } = await axios.post(api_url + "/auth/registro", {
+        nombre,
+        correo,
+        clave,
+      });
+      if (data.error) {
+        alert(data.error);
+        return;
+      }
+      if (!data.accessToken || !data.refreshToken) {
+        alert("Ha habido un error, vuelva a intentar");
+        return;
+      }
+      AsyncStorage.setItem("token", accessToken);
+      AsyncStorage.setItem("rToken", refreshToken);
+      navigation.navigate("Cart");
+    } catch (error) {
+      alert(error.message);
     }
-    if ( !data.accessToken || !data.refreshToken){
-      alert ("Ha habido un error, vuelva a intentar")
-      return
-    }
-    AsyncStorage.setItem("token", accessToken)
-    AsyncStorage.setItem("rToken", refreshToken)
-    navigation.navigate("Cart")
   }
-  return <View style={styles.container} >
-    <Image
+  return (
+    <View style={styles.container}>
+      <Image
         style={styles.logo}
         source={require("../assets/helmet.png")}
       ></Image>
 
       <Text style={styles.logoText}>Login Bienvenido</Text>
 
-      <TextInput value={nombre} onChangeText={setNombre}
+      <TextInput
+        value={nombre}
+        onChangeText={setNombre}
         style={styles.inputBox}
         underlineColorAndroid="rgb(0,0,0,0)"
         placeholder="Nombre"
         placeholderTextColor="#4b4b4b"
       ></TextInput>
-      <TextInput value={correo} onChangeText={setCorreo}
+      <TextInput
+        value={correo}
+        onChangeText={setCorreo}
         style={styles.inputBox}
         underlineColorAndroid="rgb(0,0,0,0)"
         placeholder="Correo"
         placeholderTextColor="#4b4b4b"
       ></TextInput>
 
-      <TextInput value={clave} onChangeText={setClave}
+      <TextInput
+        value={clave}
+        onChangeText={setClave}
         style={styles.inputBox}
         underlineColorAndroid="rgb(0,0,0,0)"
         placeholder="Clave"
@@ -55,18 +76,17 @@ const [clave, setClave] = useState('')
         placeholderTextColor="#4b4b4b"
       ></TextInput>
 
-
-      <TouchableOpacity style={styles.btn} onPress={crearUsuario }>
+      <TouchableOpacity style={styles.btn} onPress={crearUsuario}>
         <Text style={styles.btnText}>Ingresar</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={irALogin} >
-      <Text style={styles.txtRgt}>
-        ¿Ya tienes una cuenta? <Text style={styles.txt}>Inicio de Sesión</Text>
-      </Text>
-
-      </TouchableOpacity>      
-
-  </View>
+      <TouchableOpacity onPress={irALogin}>
+        <Text style={styles.txtRgt}>
+          ¿Ya tienes una cuenta?{" "}
+          <Text style={styles.txt}>Inicio de Sesión</Text>
+        </Text>
+      </TouchableOpacity>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
