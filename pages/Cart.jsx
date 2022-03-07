@@ -21,7 +21,9 @@ export function Cart() {
           Terminar Compra
         </PrimaryButton>
       ) : (
-        <View />
+        <View>
+          <Text>Aun no tienes productos agregados</Text>
+        </View>
       )}
     </View>
   );
