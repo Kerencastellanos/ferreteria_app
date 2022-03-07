@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
     width: "80%",
     //textAlign:"center",
     //borderRadius: 15,
-    backgroundColor: "#dddddd",
+    backgroundColor: "#f3f3f3",
     paddingHorizontal: 19,
     paddingVertical: 15,
     fontSize: 18,
@@ -139,6 +139,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "500",
     color: "#FFFFFF",
+    textAlign: "center",
     fontWeight: "bold",
   },
   txt: {
