@@ -6,7 +6,7 @@ import { Buscador, Producto } from "../components";
 import axios from "axios";
 import { api_url } from "../constantes";
 
-export function Login() {
+export function Login({navigation}) {
   /*const [Usuario, setUsuario] = useState(null)
     const [Contraseña, setContraseña] = useState(null)
     const { signIn } = useContext(AuthContext)
@@ -27,6 +27,10 @@ export function Login() {
         }
     }
     */
+
+    function irARegistro(){
+      navigation.navigate("Registro")
+    }
   return (
     <View style={styles.container}>
       <Image
@@ -56,10 +60,14 @@ export function Login() {
       <TouchableOpacity style={styles.btn}>
         <Text style={styles.btnText}>Ingresar</Text>
       </TouchableOpacity>
-
+      <TouchableOpacity onPress={irARegistro} >
       <Text style={styles.txtRgt}>
         ¿No tienes una cuenta? <Text style={styles.txt}>Registrate</Text>
       </Text>
+
+
+
+      </TouchableOpacity>      
     </View>
   );
 }
