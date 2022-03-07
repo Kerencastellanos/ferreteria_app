@@ -1,10 +1,10 @@
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View, Text, Button } from "react-native";
 import { useContext } from "react";
 import { CartContext } from "../context";
 import { ListaProductos, PrimaryButton } from "../components";
 
 export function Cart() {
-  const { cart } = useContext(CartContext);
+  const { cart, setCart } = useContext(CartContext);
   if (!cart.length) {
     return (
       <View style={styles.center}>
@@ -14,8 +14,14 @@ export function Cart() {
       </View>
     );
   }
+
+  function borratTodo() {
+    setCart([]);
+  }
+
   return (
     <View style={styles.container}>
+      <Button title="Borrar Todo" onPress={borratTodo} color={"#ff5e5e"} />
       <ListaProductos prods={cart} />
       <PrimaryButton
         style={{
