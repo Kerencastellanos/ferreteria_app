@@ -1,5 +1,6 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Cart, ProductoPage, Login } from "../pages";
+import { CartTotal } from "../components";
+import { Cart, ProductoPage, Login, Registro } from "../pages";
 import { Home } from "./Home";
 
 const Stack = createNativeStackNavigator();
@@ -11,9 +12,16 @@ export function Main() {
         name="Home"
         component={Home}
       />
-      <Stack.Screen name="Cart" component={Cart} />
+      <Stack.Screen
+        name="Cart"
+        options={{
+          headerRight: CartTotal,
+        }}
+        component={Cart}
+      />
       <Stack.Screen name="Producto" component={ProductoPage} />
       <Stack.Screen name="Login" component={Login} />
+      <Stack.Screen name="Registro" component={Registro} />
     </Stack.Navigator>
   );
 }

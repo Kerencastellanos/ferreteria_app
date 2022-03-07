@@ -7,6 +7,7 @@ import { api_url } from "../constantes";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export function Login({navigation}) {
+
     async function enviarDatos(){
         const {data}= await axios.post(api_url+"/auth/login",{correo,clave})
         if(data.error){
@@ -41,13 +42,11 @@ export function Login({navigation}) {
         <TouchableOpacity style={styles.btn} onPress={enviarDatos}>
           <Text style={styles.btnText}>Ingresar</Text>
         </TouchableOpacity>
-
         <TouchableOpacity>
           <Text style={styles.txtRgt}>
             ¿No tienes una cuenta? <Text style={styles.txt} >Registrate</Text>
           </Text>
         </TouchableOpacity>
-
     </View>
 }
 
