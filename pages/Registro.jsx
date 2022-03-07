@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import {
   View,
   Text,
@@ -10,11 +10,13 @@ import {
   StyleSheet,
 } from "react-native";
 import { api_url } from "../constantes";
+import { AuthContext } from "../context";
 
 export function Registro({ navigation }) {
   function irALogin() {
     navigation.navigate("Login");
   }
+  const { dispatch } = useContext(AuthContext);
   const [nombre, setNombre] = useState("");
   const [correo, setCorreo] = useState("");
   const [clave, setClave] = useState("");
@@ -29,12 +31,14 @@ export function Registro({ navigation }) {
         alert(data.error);
         return;
       }
-      if (!data.accessToken || !data.refreshToken) {
+      if (!data.accessToken && !data.refreshToken) {
         alert("Ha habido un error, vuelva a intentar");
         return;
       }
-      AsyncStorage.setItem("token", accessToken);
-      AsyncStorage.setItem("rToken", refreshToken);
+      dispatch({
+        type: "both",
+        payload: { token: accessToken, rToken: refreshToken },
+      });
       navigation.navigate("Cart");
     } catch (error) {
       alert(error.message);

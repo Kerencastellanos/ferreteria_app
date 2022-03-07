@@ -16,6 +16,18 @@ export const AuthContext = createContext(initContextValue);
 export function AuthProvider({ children }) {
   const [state, dispatch] = useReducer(AuthReducer, initAuthValue);
   useEffect(() => {
+    loadTokens();
+  }, []);
+
+  async function loadTokens() {
+    const rToken = await AsyncStorage.getItem("rToken");
+    const token = await AsyncStorage.getItem("token");
+    if (rToken && token) {
+      dispatch({ type: "both", payload: { rToken, token } });
+    }
+  }
+
+  useEffect(() => {
     dispatch({
       type: "isAuth",
       payload: { isAuth: state.rToken && state.token },
