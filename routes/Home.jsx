@@ -10,10 +10,10 @@ export function Home() {
     <Drawer.Navigator drawerContent={(props) => <CustomDrawer {...props} />}>
       {/* <Drawer.Screen name="Contacto" component={Contacto}/> */}
       <Drawer.Screen
-        options={({ navigation }) => ({
+        options={{
           headerTitle: () => <Logo />,
           headerRight: CartIcon,
-        })}
+        }}
         name="Productos"
         component={Productos}
       />

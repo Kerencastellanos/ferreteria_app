@@ -13,7 +13,6 @@ export function CartIcon() {
   return (
     <TouchableOpacity
       style={{
-        marginEnd: 20,
         position: "relative",
       }}
       onPress={IrACarrito}
