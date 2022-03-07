@@ -1,13 +1,19 @@
-import { View, Text } from "react-native";
+import { TextInput, View, Text } from "react-native";
+import { PrimaryButton } from "../components";
 export function Contacto() {
   return (
     <View style={{ padding: 10 }}>
-      <Text>1. Nombre: Josue Lainez </Text>
-      <Text>2. Dirección: Col. Enmaculado concepcion</Text>
-      <Text>3. Bloque: 10, casa </Text>
-      <Text>4. Ciudad: Choluteca, Choluteca</Text>
-      <Text>5. País: Honduras</Text>
-      <Text>6. Número de telefono: 99296817 </Text>
+      <Text>Nuestras Sucusarles:</Text>
+      <Text>Telefono: 2863-4515</Text>
+      <Text>Correo: ferreteriamovil@ferreteriamovil.com</Text>
+      <Text>Redes Sociales:</Text>
+
+      <TextInput
+        multiline={true}
+        numberOfLines={25}
+        placeholder="Envianos tus consultas  "
+      />
+      <PrimaryButton style={{ alignSelf: "center" }}>Enviar</PrimaryButton>
     </View>
   );
 }

@@ -15,7 +15,7 @@ import {
 import { api_url } from "../constantes";
 import { useState, useEffect, useContext, useLayoutEffect } from "react";
 import axios from "axios";
-import { CartContext } from "../context";
+import { AuthContext, CartContext } from "../context";
 const screen = Dimensions.get("window");
 
 export function ProductoPage({ route, navigation }) {
@@ -38,12 +38,14 @@ export function ProductoPage({ route, navigation }) {
       setProdsCategoria(data);
     }
   }
-
+  const { isAuth } = useContext(AuthContext);
   function Comprar() {
     addToCart();
-    if (true) {
+    if (!isAuth) {
       navigation.navigate("Login");
+      return;
     }
+    navigation.navigate("Cart");
   }
 
   useLayoutEffect(() => {
