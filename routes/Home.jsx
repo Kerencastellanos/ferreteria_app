@@ -1,7 +1,12 @@
 import { createDrawerNavigator } from "@react-navigation/drawer";
-import { CartIcon, CustomDrawer, Logo } from "../components";
+import {
+  CartIcon,
+  ContactoIcon,
+  CustomDrawer,
+  Logo,
+  ProductosIcon,
+} from "../components";
 import { Productos, Contacto } from "../pages";
-
 const Drawer = createDrawerNavigator();
 export function Home() {
   return (
@@ -10,11 +15,16 @@ export function Home() {
         options={{
           headerTitle: () => <Logo />,
           headerRight: CartIcon,
+          drawerIcon: ProductosIcon,
         }}
         name="Productos"
         component={Productos}
       />
-      <Drawer.Screen name="Contacto" component={Contacto} />
+      <Drawer.Screen
+        options={{ drawerIcon: ContactoIcon }}
+        name="Contacto"
+        component={Contacto}
+      />
     </Drawer.Navigator>
   );
 }

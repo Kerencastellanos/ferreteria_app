@@ -8,3 +8,4 @@ export { ListaProductos } from "./ListaProductos";
 export { CartIcon } from "./CartIcon";
 export { CartTotal } from "./CartTotal";
 export { PrimaryButton } from "./PrimaryButton";
+export { ContactoIcon, ProductosIcon } from "./DrawerIcons";

@@ -29,6 +29,7 @@ export function CustomDrawer(props) {
       <Logo style={{ margin: 10 }}>
         <Text>Ferreteria Movil</Text>
       </Logo>
+      <DrawerItemList {...props} />
       {isAuth ? (
         <>
           <DrawerItem label={"Perfil"} onPress={navegar("Perfil")} />
@@ -37,7 +38,6 @@ export function CustomDrawer(props) {
       ) : (
         <DrawerItem label={"Iniciar Session"} onPress={navegar("Login")} />
       )}
-      <DrawerItemList {...props} />
     </DrawerContentScrollView>
   );
 }
