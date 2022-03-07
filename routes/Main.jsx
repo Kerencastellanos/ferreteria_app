@@ -1,6 +1,6 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { CartTotal } from "../components";
-import { Cart, ProductoPage, Login, Registro } from "../pages";
+import { Cart, ProductoPage, Login, Registro, Perfil } from "../pages";
 import { Home } from "./Home";
 
 const Stack = createNativeStackNavigator();
@@ -22,6 +22,7 @@ export function Main() {
       <Stack.Screen name="Producto" component={ProductoPage} />
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="Registro" component={Registro} />
+      <Stack.Screen name="Perfil" component={Perfil} />
     </Stack.Navigator>
   );
 }

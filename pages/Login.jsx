@@ -6,7 +6,7 @@ import { api_url } from "../constantes";
 import { AuthContext } from "../context";
 
 export function Login({ navigation }) {
-  const { dispatch } = useContext(AuthContext);
+  const { dispatch, isAuth } = useContext(AuthContext);
 
   async function enviarDatos() {
     const { data } = await axios.post(api_url + "/auth/login", {
@@ -23,10 +23,11 @@ export function Login({ navigation }) {
     }
     dispatch({
       type: "both",
-      payload: { token: accessToken, rToken: refreshToken },
+      payload: { token: data.accessToken, rToken: data.refreshToken },
     });
+    console.log(isAuth);
 
-    navigation.navigate("Cart");
+    // navigation.navigate("Cart");
   }
   const [correo, setCorreo] = useState("");
   const [clave, setClave] = useState("");

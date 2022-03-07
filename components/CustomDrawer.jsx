@@ -10,9 +10,14 @@ import { useContext } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 export function CustomDrawer(props) {
-  const { isAuth } = useContext(AuthContext);
+  const { isAuth, dispatch } = useContext(AuthContext);
   const { navigate } = useNavigation();
-
+  function cerrarSession() {
+    dispatch({
+      type: "both",
+      payload: { rToken: "", token: "" },
+    });
+  }
   function navegar(screen = "") {
     return (e) => {
       navigate(screen);
@@ -25,7 +30,10 @@ export function CustomDrawer(props) {
         <Text>Ferreteria Movil</Text>
       </Logo>
       {isAuth ? (
-        <DrawerItem label={"Perfil"} onPress={navegar("Perfil")} />
+        <>
+          <DrawerItem label={"Perfil"} onPress={navegar("Perfil")} />
+          <DrawerItem label={"Cerrar Session"} onPress={cerrarSession} />
+        </>
       ) : (
         <DrawerItem label={"Iniciar Session"} onPress={navegar("Login")} />
       )}

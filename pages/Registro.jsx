@@ -1,4 +1,3 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { useState, useContext } from "react";
 import {
@@ -8,6 +7,7 @@ import {
   Image,
   TouchableOpacity,
   StyleSheet,
+  Alert,
 } from "react-native";
 import { api_url } from "../constantes";
 import { AuthContext } from "../context";
@@ -28,20 +28,23 @@ export function Registro({ navigation }) {
         clave,
       });
       if (data.error) {
-        alert(data.error);
+        Alert.alert("Ferreteria Movil", data.error);
         return;
       }
       if (!data.accessToken && !data.refreshToken) {
-        alert("Ha habido un error, vuelva a intentar");
+        Alert.alert(
+          "Ferreteria Movil",
+          "Ha habido un error, vuelva a intentar"
+        );
         return;
       }
       dispatch({
         type: "both",
-        payload: { token: accessToken, rToken: refreshToken },
+        payload: { token: data.accessToken, rToken: data.refreshToken },
       });
-      navigation.navigate("Cart");
+      // navigation.navigate("Cart");
     } catch (error) {
-      alert(error.message);
+      Alert.alert("Ferreteria Movil", error.message);
     }
   }
   return (
