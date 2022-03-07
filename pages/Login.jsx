@@ -30,11 +30,12 @@ export function Login({navigation}) {
     
         <Text style={styles.logoText}>Login Bienvenido</Text>
         
-        <TextInput style={styles.inputBox} underlineColorAndroid='rgb(0,0,0,0)' 
+        <TextInput style={styles.inputBox} underlineColorAndroid='#00388b' 
         placeholder="Correo" value={correo} onChangeText={setCorreo} placeholderTextColor="#4b4b4b"></TextInput>
         
-        <TextInput style={styles.inputBox} underlineColorAndroid='rgb(0,0,0,0)' 
-        placeholder="Clave" secureTextEntry={true} value={clave} onChangeText={setClave} placeholderTextColor="#4b4b4b"></TextInput>
+        <TextInput style={styles.inputBox} underlineColorAndroid='#00388b' 
+        placeholder="Clave" value={clave} onChangeText={setClave} placeholderTextColor="#4b4b4b"> 
+        </TextInput>
         <TouchableOpacity>
           <Text style={styles.txt}>¿Olvide mi contraseña?</Text>
         </TouchableOpacity>
