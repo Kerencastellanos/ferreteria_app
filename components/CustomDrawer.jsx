@@ -26,7 +26,7 @@ export function CustomDrawer(props) {
 
   return (
     <DrawerContentScrollView {...props}>
-      <Logo style={{ margin: 10 }}>
+      <Logo style={{ margin: 10, marginBottom: 50 }}>
         <Text>Ferreteria Movil</Text>
       </Logo>
       <DrawerItemList {...props} />
