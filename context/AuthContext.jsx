@@ -1,8 +1,15 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 import { createContext, useReducer, useEffect, useState } from "react";
+import { api_url } from "../constantes";
 import { AuthReducer } from "./AuthReducer";
 
-export const initAuthValue = { token: "", rToken: "", isAuth: false };
+export const initAuthValue = {
+  token: "",
+  rToken: "",
+  isAuth: false,
+  usuario: {},
+};
 
 const initContextValue = {
   dispatch({ type = "", payload = {} }) {
@@ -24,14 +31,47 @@ export function AuthProvider({ children }) {
     const rToken = await AsyncStorage.getItem("rToken");
     const token = await AsyncStorage.getItem("token");
     setLoaded(true);
-    console.log("loadTokens: ", rToken, token);
     if (rToken && token) {
-      dispatch({ type: "both", payload: { rToken, token } });
+      const { data } = await axios.get(api_url + "/auth/me", {
+        headers: {
+          Authentication: token,
+        },
+      });
+      // token expiro
+      if (data.error) {
+        console.log("token expiro");
+        // renovar token
+        const { data } = await axios.post(api_url + "/auth/refresh", {
+          refreshToken: rToken,
+        });
+        if (data.error) {
+          console.error(data.error);
+          // refresh token es invalido
+          dispatch({
+            type: "both",
+            payload: { rToken: "", token: "" },
+          });
+          return;
+        }
+        if (data.accessToken) {
+          dispatch({
+            type: "both",
+            payload: { rToken, token: data.accessToken },
+          });
+        }
+        return;
+      }
+
+      //token valido
+      console.log("tokens ok");
+      dispatch({
+        type: "both",
+        payload: { rToken, token },
+      });
     }
   }
 
   useEffect(() => {
-    console.log("tokens update");
     dispatch({
       type: "isAuth",
       payload: { isAuth: state.rToken && state.token },

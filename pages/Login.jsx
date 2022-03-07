@@ -25,7 +25,6 @@ export function Login({ navigation }) {
       type: "both",
       payload: { token: data.accessToken, rToken: data.refreshToken },
     });
-    console.log(isAuth);
 
     // navigation.navigate("Cart");
   }
