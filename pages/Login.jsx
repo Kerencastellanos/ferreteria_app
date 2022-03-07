@@ -7,6 +7,7 @@ import { api_url } from "../constantes";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export function Login({navigation}) {
+
     async function enviarDatos(){
         const {data}= await axios.post(api_url+"/auth/login",{correo,clave})
         if(data.error){
@@ -25,6 +26,7 @@ export function Login({navigation}) {
     const [clave, setClave] = useState("")
     
     /*
+
     const [ocultarPass, setOcultarPass] = useState(true)
 
     //Función del login que llamo de la navegación
@@ -41,26 +43,48 @@ export function Login({navigation}) {
         }
     }
     */
-    return <View style={styles.container}>
-        <Image style={styles.logo} source={require('../assets/helmet.png')}></Image>
-    
-        <Text style={styles.logoText}>Login Bienvenido</Text>
-        
-        <TextInput style={styles.inputBox} underlineColorAndroid='rgb(0,0,0,0)' 
-        placeholder="Correo" value={correo} onChangeText={setCorreo} placeholderTextColor="#4b4b4b"></TextInput>
-        
-        <TextInput style={styles.inputBox} underlineColorAndroid='rgb(0,0,0,0)' 
-        placeholder="Clave" secureTextEntry={true} value={clave} onChangeText={setClave} placeholderTextColor="#4b4b4b"></TextInput>
+
+
+    function irARegistro(){
+      navigation.navigate("Registro")
+    }
+  return (
+    <View style={styles.container}>
+      <Image
+        style={styles.logo}
+        source={require("../assets/helmet.png")}
+      ></Image>
+
+      <Text style={styles.logoText}>Login Bienvenido</Text>
+
+      <TextInput
+        style={styles.inputBox}
+        underlineColorAndroid="rgb(0,0,0,0)"
+        placeholder="Correo"
+        placeholderTextColor="#4b4b4b"
+      ></TextInput>
+
+      <TextInput
+        style={styles.inputBox}
+        underlineColorAndroid="rgb(0,0,0,0)"
+        placeholder="Clave"
+        secureTextEntry={true}
+        placeholderTextColor="#4b4b4b"
+      ></TextInput>
 
       <Text style={styles.txt}>¿Olvide mi contraseña?</Text>
 
       <TouchableOpacity style={styles.btn} onPress={enviarDatos}>
         <Text style={styles.btnText}>Ingresar</Text>
       </TouchableOpacity>
-
+      <TouchableOpacity onPress={irARegistro} >
       <Text style={styles.txtRgt}>
         ¿No tienes una cuenta? <Text style={styles.txt}>Registrate</Text>
       </Text>
+
+
+
+      </TouchableOpacity>      
     </View>
 }
 
