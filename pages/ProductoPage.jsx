@@ -6,7 +6,12 @@ import {
   Text,
   View,
 } from "react-native";
-import { CartIcon, ListaProductos, MyImageSlider } from "../components";
+import {
+  CartIcon,
+  ListaProductos,
+  MyImageSlider,
+  PrimaryButton,
+} from "../components";
 import { api_url } from "../constantes";
 import { useState, useEffect, useContext, useLayoutEffect } from "react";
 import axios from "axios";
@@ -59,9 +64,7 @@ export function ProductoPage({ route, navigation }) {
         <Text> {descripcion}</Text>
         <Text style={styles.precio}>Lps.{precio}</Text>
         <Text>Disponibles: {stock}</Text>
-        <TouchableOpacity onPress={Comprar} style={styles.btn}>
-          <Text style={styles.white}>Comprar</Text>
-        </TouchableOpacity>
+        <PrimaryButton onPress={Comprar}>Comprar</PrimaryButton>
         <TouchableOpacity onPress={addToCart} style={styles.btnOutline}>
           <Text style={styles.purple}>Agregar al Carrito</Text>
         </TouchableOpacity>
@@ -96,15 +99,7 @@ const styles = StyleSheet.create({
   precio: {
     marginBottom: 15,
   },
-  btn: {
-    marginVertical: 10,
-    width: "80%",
-    textAlign: "center",
-    borderRadius: 15,
-    backgroundColor: "#5448C8",
-    paddingHorizontal: 10,
-    paddingVertical: 15,
-  },
+
   btnOutline: {
     marginVertical: 10,
     width: "80%",
