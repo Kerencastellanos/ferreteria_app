@@ -43,7 +43,7 @@ export function ProductoPage({ route, navigation }) {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerRight: CartIcon,
+      headerRight: () => <CartIcon />,
     });
   }, []);
 

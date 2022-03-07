@@ -13,20 +13,30 @@ export function Productos() {
     SolicitarProds();
   }, []);
   async function SolicitarProds() {
-    const { data } = await axios.get(api_url + "/productos");
-    setProductos(data);
+    try {
+      const { data } = await axios.get(api_url + "/productos");
+      setProductos(data);
+      setMsg("");
+    } catch (error) {
+      setMsg(error.message);
+    }
     setCargando(false);
   }
 
   async function onSubmitEditing() {
     setMsg(undefined);
     setCargando(true);
-    const { data } = await axios.get(api_url + `/productos?nombre=${buscar}`);
-    setProductos(data);
-    setCargando(false);
-    if (!data.length) {
-      setMsg(`No se encontraron productos referentes a "${buscar}"`);
+    try {
+      const { data } = await axios.get(api_url + `/productos?nombre=${buscar}`);
+      setProductos(data);
+      setMsg("");
+      if (!data.length) {
+        setMsg(`No se encontraron productos referentes a "${buscar}"`);
+      }
+    } catch (error) {
+      setMsg(error.message);
     }
+    setCargando(false);
   }
 
   if (cargando) {

@@ -1,5 +1,5 @@
 import { createDrawerNavigator } from "@react-navigation/drawer";
-import { CustomDrawer, Logo } from "../components";
+import { CartIcon, CustomDrawer, Logo } from "../components";
 import { Productos, Contacto } from "../pages";
 import { EvilIcons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -12,16 +12,7 @@ export function Home() {
       <Drawer.Screen
         options={({ navigation }) => ({
           headerTitle: () => <Logo />,
-          headerRight: ({}) => (
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate("Cart");
-              }}
-              style={{ marginEnd: 10 }}
-            >
-              <EvilIcons name="cart" size={24} color="black" />
-            </TouchableOpacity>
-          ),
+          headerRight: CartIcon,
         })}
         name="Productos"
         component={Productos}
