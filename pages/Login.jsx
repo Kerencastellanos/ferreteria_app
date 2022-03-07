@@ -24,23 +24,6 @@ export function Login({navigation}) {
     const [correo, setCorreo] = useState("")
     const [clave, setClave] = useState("")
     
-    /*
-    const [ocultarPass, setOcultarPass] = useState(true)
-
-    //Función del login que llamo de la navegación
-    const loginHandle = async (username, password) => {
-        if (!username || !password) {
-        Alert.alert('Debe ingresar los datos completos')
-        } else {
-        const lging = await signIn(username, password)
-        if (lging) {
-            if (lging.error != "") {
-            Alert.alert(lging.msj)
-            }
-        }
-        }
-    }
-    */
     return <View style={styles.container}>
         <Image style={styles.logo} source={require('../assets/helmet.png')}></Image>
     
@@ -51,16 +34,20 @@ export function Login({navigation}) {
         
         <TextInput style={styles.inputBox} underlineColorAndroid='rgb(0,0,0,0)' 
         placeholder="Clave" secureTextEntry={true} value={clave} onChangeText={setClave} placeholderTextColor="#4b4b4b"></TextInput>
+        <TouchableOpacity>
+          <Text style={styles.txt}>¿Olvide mi contraseña?</Text>
+        </TouchableOpacity>
 
-      <Text style={styles.txt}>¿Olvide mi contraseña?</Text>
+        <TouchableOpacity style={styles.btn} onPress={enviarDatos}>
+          <Text style={styles.btnText}>Ingresar</Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity style={styles.btn} onPress={enviarDatos}>
-        <Text style={styles.btnText}>Ingresar</Text>
-      </TouchableOpacity>
+        <TouchableOpacity>
+          <Text style={styles.txtRgt}>
+            ¿No tienes una cuenta? <Text style={styles.txt} >Registrate</Text>
+          </Text>
+        </TouchableOpacity>
 
-      <Text style={styles.txtRgt}>
-        ¿No tienes una cuenta? <Text style={styles.txt}>Registrate</Text>
-      </Text>
     </View>
 }
 
@@ -80,14 +67,11 @@ const styles = StyleSheet.create({
   logoText: {
     marginVertical: 15,
     fontSize: 20,
-    color: "#ffffff",
+    color: "#000000",
     fontWeight: "bold",
   },
   inputBox: {
     width: "80%",
-    //textAlign:"center",
-    //borderRadius: 15,
-    backgroundColor: "#dddddd",
     paddingHorizontal: 19,
     paddingVertical: 15,
     fontSize: 18,
@@ -108,6 +92,7 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     color: "#FFFFFF",
     fontWeight: "bold",
+    textAlign: "center",
   },
   txt: {
     color: "#0080FF",
@@ -115,5 +100,6 @@ const styles = StyleSheet.create({
   },
   txtRgt: {
     marginTop: 60,
+    color: "#000000",
   },
 });
