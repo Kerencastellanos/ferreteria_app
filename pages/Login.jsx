@@ -26,7 +26,7 @@ export function Login({ navigation }) {
       payload: { token: data.accessToken, rToken: data.refreshToken },
     });
 
-    // navigation.navigate("Cart");
+    navigation.navigate("Cart");
   }
   const [correo, setCorreo] = useState("");
   const [clave, setClave] = useState("");

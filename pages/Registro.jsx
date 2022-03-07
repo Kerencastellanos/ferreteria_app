@@ -42,7 +42,7 @@ export function Registro({ navigation }) {
         type: "both",
         payload: { token: data.accessToken, rToken: data.refreshToken },
       });
-      // navigation.navigate("Cart");
+      navigation.navigate("Cart");
     } catch (error) {
       Alert.alert("Ferreteria Movil", error.message);
     }
