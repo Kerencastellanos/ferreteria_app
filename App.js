@@ -1,4 +1,5 @@
 import { NavigationContainer } from "@react-navigation/native";
+import { CartProvider } from "./context";
 import { Main } from "./routes";
 // import axios from "axios";
 // axios.get(api_url + "/auth/me");
@@ -6,7 +7,9 @@ import { Main } from "./routes";
 export default function App() {
   return (
     <NavigationContainer>
-      <Main />
+      <CartProvider>
+        <Main />
+      </CartProvider>
     </NavigationContainer>
   );
 }

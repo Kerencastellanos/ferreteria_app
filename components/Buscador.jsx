@@ -1,11 +1,17 @@
 import { TouchableOpacity, StyleSheet, TextInput, View } from "react-native";
 import { EvilIcons } from "@expo/vector-icons";
 
-export function Buscador({ placeholder, value, onChangeText }) {
+export function Buscador({
+  onSubmitEditing,
+  placeholder,
+  value,
+  onChangeText,
+}) {
   return (
     <View style={styles.box}>
       <EvilIcons name="search" size={24} color="black" />
       <TextInput
+        onSubmitEditing={onSubmitEditing}
         style={styles.input}
         placeholder={placeholder}
         keyboardType="web-search"
@@ -25,6 +31,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#f3f3f3",
     margin: 5,
     borderRadius: 10,
+    paddingHorizontal: 10,
     alignItems: "center",
     justifyContent: "space-between",
   },
