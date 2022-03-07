@@ -1,9 +1,30 @@
 
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import { useState } from "react";
 import { View, Text, TextInput, Image, TouchableOpacity,StyleSheet } from "react-native";
+import { api_url } from "../constantes";
 
 export function Registro({navigation}){
   function irALogin(){
     navigation.navigate("Login")
+  }
+const [nombre,setNombre] = useState('')
+const [correo, setCorreo] = useState('')
+const [clave, setClave] = useState('')
+  async function crearUsuario(){
+    const {data} = await axios.post(api_url + '/auth/registro', {nombre,correo,clave})
+    if (data.error) {
+      alert (data.error)
+      return
+    }
+    if ( !data.accessToken || !data.refreshToken){
+      alert ("Ha habido un error, vuelva a intentar")
+      return
+    }
+    AsyncStorage.setItem("token", accessToken)
+    AsyncStorage.setItem("rToken", refreshToken)
+    navigation.navigate("Cart")
   }
   return <View style={styles.container} >
     <Image
@@ -13,20 +34,20 @@ export function Registro({navigation}){
 
       <Text style={styles.logoText}>Login Bienvenido</Text>
 
-      <TextInput
+      <TextInput value={nombre} onChangeText={setNombre}
         style={styles.inputBox}
         underlineColorAndroid="rgb(0,0,0,0)"
         placeholder="Nombre"
         placeholderTextColor="#4b4b4b"
       ></TextInput>
-      <TextInput
+      <TextInput value={correo} onChangeText={setCorreo}
         style={styles.inputBox}
         underlineColorAndroid="rgb(0,0,0,0)"
         placeholder="Correo"
         placeholderTextColor="#4b4b4b"
       ></TextInput>
 
-      <TextInput
+      <TextInput value={clave} onChangeText={setClave}
         style={styles.inputBox}
         underlineColorAndroid="rgb(0,0,0,0)"
         placeholder="Clave"
@@ -35,7 +56,7 @@ export function Registro({navigation}){
       ></TextInput>
 
 
-      <TouchableOpacity style={styles.btn}>
+      <TouchableOpacity style={styles.btn} onPress={crearUsuario }>
         <Text style={styles.btnText}>Ingresar</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={irALogin} >
