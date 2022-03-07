@@ -1,6 +1,6 @@
 import { TouchableOpacity, Image, StyleSheet, Text, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { defaultImage } from "../constantes";
+import { AntDesign } from "@expo/vector-icons";
 
 export function Producto({ mini = false, producto }) {
   const navigation = useNavigation();
@@ -13,12 +13,16 @@ export function Producto({ mini = false, producto }) {
       onPress={verProducto}
       style={[styles.container, mini ? { flexDirection: "column" } : {}]}
     >
-      <Image
-        source={{
-          uri: imagenes.length ? imagenes[0].url : defaultImage,
-        }}
-        style={styles.img}
-      />
+      {imagenes.length ? (
+        <Image
+          source={{
+            uri: imagenes[0].url,
+          }}
+          style={styles.img}
+        />
+      ) : (
+        <AntDesign name="unknowfile1" size={150} color="black" />
+      )}
       {!mini ? (
         <View style={styles.info}>
           <Text>{nombre}</Text>

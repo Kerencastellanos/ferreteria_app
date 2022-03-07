@@ -1,4 +1,5 @@
 import { View, FlatList } from "react-native";
+import { uuid } from "../constantes";
 import { Line } from "./Line";
 import { Producto } from "./Producto";
 
@@ -8,7 +9,7 @@ export function ListaProductos({ prods = [], horizontal = false }) {
       <FlatList
         horizontal={horizontal}
         data={prods}
-        keyExtractor={(item) => item.id}
+        keyExtractor={() => uuid()}
         ItemSeparatorComponent={!horizontal && Line}
         renderItem={({ item }) => (
           <Producto mini={horizontal} producto={item} />

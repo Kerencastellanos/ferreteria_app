@@ -1,11 +1,9 @@
 import { Dimensions, Image, ScrollView, View } from "react-native";
 import { useState, useRef } from "react";
 import { FlatList } from "react-native-gesture-handler";
-import { defaultImage } from "../constantes";
-
 const size = Dimensions.get("screen");
 
-export function MyImageSlider({ images = [{ url }] }) {
+export function MyImageSlider({ images = [{ url: "" }] }) {
   const [current, setCurrent] = useState(0);
 
   const itemsChanged = useRef(({ viewableItems }) => {
@@ -25,10 +23,10 @@ export function MyImageSlider({ images = [{ url }] }) {
         renderItem={({ item: { url } }) => (
           <Image
             style={{ width: size.width, height: size.width }}
-            source={{ uri: url ?? defaultImage }}
+            source={{ uri: url }}
           />
         )}
-      ></FlatList>
+      />
       <View
         style={{
           alignItems: "center",

@@ -22,7 +22,7 @@ export function ProductoPage({ route, navigation }) {
   const { nombre, descripcion, stock, precio, imagenes, categoria } =
     route.params;
 
-  const { cart, setCart } = useContext(CartContext);
+  const { setCart } = useContext(CartContext);
 
   useEffect(() => {
     obtenerProds();
