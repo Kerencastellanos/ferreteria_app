@@ -1,103 +1,103 @@
-import React, { useState, useContext } from 'react';
-import { StyleSheet, View, Dimensions, TouchableOpacity, Alert, TextInput } from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { Input, CheckBox, Image, Text } from "react-native-elements";
-import Icon from 'react-native-vector-icons/FontAwesome';
-const { width, height } = Dimensions.get("screen");
-import logo from '../Public/LogoAdmin.png'
 
-import { AuthContext } from '../provider/context';
+import { View, Text, TextInput, Image, TouchableOpacity,StyleSheet } from "react-native";
 
-export default function Registro({ navigation }) {
-  const [nombre, setNombreCompleto] = useState("")
-  const [correo, setCorreo] = useState("")
-  const [clave, setClave] = useState("")
-  
-
-  const [ocultarPass, setOcultarPass] = useState(true)
-
-  const { signUp } = useContext(AuthContext)
-
-  const preSignUp = async () => {
-    if (!nombre || !correo || !clave) {
-      Alert.alert("Llene todos los campos")
-      return
-    }
-    const lging = await signUp(nombre, correo, clave)
-    if (lging) {
-      if (lging.error != "") {
-        Alert.alert(lging.msj)
-      }
-    }
+export function Registro({navigation}){
+  function irALogin(){
+    navigation.navigate("Login")
   }
+  return <View style={styles.container} >
+    <Image
+        style={styles.logo}
+        source={require("../assets/helmet.png")}
+      ></Image>
 
-  return (
-    <SafeAreaProvider>
-      <View style={styles.container}>
+      <Text style={styles.logoText}>Login Bienvenido</Text>
 
-        <View style={{ alignSelf: 'center', flex: 1, justifyContent: 'center' }}>
-          <Image source={logo} style={{ resizeMode: 'contain', width: width - 30, height: 200 }} />
-        </View>
+      <TextInput
+        style={styles.inputBox}
+        underlineColorAndroid="rgb(0,0,0,0)"
+        placeholder="Nombre"
+        placeholderTextColor="#4b4b4b"
+      ></TextInput>
+      <TextInput
+        style={styles.inputBox}
+        underlineColorAndroid="rgb(0,0,0,0)"
+        placeholder="Correo"
+        placeholderTextColor="#4b4b4b"
+      ></TextInput>
 
-        <View style={styles.view1}>
-          <View>
-            <Input placeholder=' Nombre Completo' value={nombre} onChangeText={setNombreCompleto} leftIcon={<Icon size={25} name="user" />} />
-            <Input placeholder=' Correo Electronico' value={correo} onChangeText={setCorreo} leftIcon={<Icon size={25} name="at" />} />
-            <Input placeholder=' Contraseña' value={clave} onChangeText={setClave} onChangeText={setClave} rightIcon={
-              <Icon
-                name={ocultarPass ? 'eye-slash' : 'eye'}
-                size={25}
-                color="black"
-                onPress={() => setOcultarPass(!ocultarPass)}
-              />
-            }
-              secureTextEntry={ocultarPass ? true : false} leftIcon={<Icon size={25} name="lock" />} />    
-              <TextInput secureTextEntry={true}> </TextInput>        
-          </View>
+      <TextInput
+        style={styles.inputBox}
+        underlineColorAndroid="rgb(0,0,0,0)"
+        placeholder="Clave"
+        secureTextEntry={true}
+        placeholderTextColor="#4b4b4b"
+      ></TextInput>
 
-          <TouchableOpacity style={styles.boton} onPress={() => preSignUp()}>
-            <Text style={styles.textoBoton}> Confirmar </Text>
-          </TouchableOpacity>
-        </View>
 
-      </View>
-    </SafeAreaProvider>
-  );
+      <TouchableOpacity style={styles.btn}>
+        <Text style={styles.btnText}>Ingresar</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={irALogin} >
+      <Text style={styles.txtRgt}>
+        ¿Ya tienes una cuenta? <Text style={styles.txt}>Inicio de Sesión</Text>
+      </Text>
+
+      </TouchableOpacity>      
+
+  </View>
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#170055',
+    backgroundColor: "#fff",
+    //justifyContent: 'center',
+    alignItems: "center",
   },
-  boton: {
-    elevation: 8,
-    backgroundColor: "#07689F",
-    borderRadius: 7,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    shadowColor: "#161E54",
-    marginBottom: 10,
-    shadowOffset: {
-      width: 0,
-      height: 1
-    },
-    shadowOpacity: 0.32,
-    shadowRadius: 5.46,
-    marginTop: 1,
+  logo: {
+    width: 70,
+    height: 70,
+    padding: 50,
+    marginTop: 130,
   },
-  textoBoton: {
+  logoText: {
+    marginVertical: 15,
+    fontSize: 20,
+    color: "#ffffff",
+    fontWeight: "bold",
+  },
+  inputBox: {
+    width: "80%",
+    //textAlign:"center",
+    //borderRadius: 15,
+    backgroundColor: "#dddddd",
+    paddingHorizontal: 19,
+    paddingVertical: 15,
+    fontSize: 18,
+    color: "#1d1d1d",
+    marginVertical: 10,
+  },
+  btn: {
+    width: "80%",
+    backgroundColor: "#00388b",
+    marginVertical: 30,
+    paddingVertical: 20,
+    borderRadius: 5,
+    textAlign: "center",
+    textShadowColor: "#191970",
+  },
+  btnText: {
     fontSize: 16,
-    color: "#fff",
-    alignSelf: 'center',
-    textTransform: 'uppercase',
-    fontWeight: 'bold'
+    fontWeight: "500",
+    color: "#FFFFFF",
+    fontWeight: "bold",
   },
-  view1: {
-    backgroundColor: '#FAFAFA',
-    flex: 2,
-    padding: 20,
-    borderTopStartRadius: 15,
-    borderTopEndRadius: 15
+  txt: {
+    color: "#0080FF",
+    fontWeight: "500",
+  },
+  txtRgt: {
+    marginTop: 60,
   },
 });
