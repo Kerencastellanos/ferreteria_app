@@ -2,14 +2,30 @@ import { FlatList, StyleSheet } from "react-native";
 import { useEffect, useState, useContext } from "react";
 import { View, Text, TextInput, Image, TouchableOpacity } from "react-native";
 //import { Input, CheckBox, Image, Text } from "react-native-elements";
-import { Buscador, Producto } from "../components";
 import axios from "axios";
 import { api_url } from "../constantes";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export function Login({navigation}) {
-  /*const [Usuario, setUsuario] = useState(null)
-    const [Contraseña, setContraseña] = useState(null)
-    const { signIn } = useContext(AuthContext)
+
+    async function enviarDatos(){
+        const {data}= await axios.post(api_url+"/auth/login",{correo,clave})
+        if(data.error){
+            alert(data.error)
+            return
+        }
+        if (!data.accessToken || !data.refreshToken){
+            alert("Habido un error vuelva a intentar")
+            return
+        }
+        AsyncStorage.setItem('token', data.accessToken)
+        AsyncStorage.setItem('rToken', data.refreshToken)
+        navigation.navigate('Cart')
+    } 
+    const [correo, setCorreo] = useState("")
+    const [clave, setClave] = useState("")
+    
+    /*
 
     const [ocultarPass, setOcultarPass] = useState(true)
 
@@ -27,6 +43,7 @@ export function Login({navigation}) {
         }
     }
     */
+
 
     function irARegistro(){
       navigation.navigate("Registro")
@@ -57,7 +74,7 @@ export function Login({navigation}) {
 
       <Text style={styles.txt}>¿Olvide mi contraseña?</Text>
 
-      <TouchableOpacity style={styles.btn}>
+      <TouchableOpacity style={styles.btn} onPress={enviarDatos}>
         <Text style={styles.btnText}>Ingresar</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={irARegistro} >
@@ -69,7 +86,6 @@ export function Login({navigation}) {
 
       </TouchableOpacity>      
     </View>
-  );
 }
 
 const styles = StyleSheet.create({
