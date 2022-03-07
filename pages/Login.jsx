@@ -1,53 +1,39 @@
-import { FlatList, StyleSheet } from "react-native";
-import { useEffect, useState, useContext } from "react";
+import { StyleSheet } from "react-native";
+import { useState, useContext } from "react";
 import { View, Text, TextInput, Image, TouchableOpacity } from "react-native";
-//import { Input, CheckBox, Image, Text } from "react-native-elements";
 import axios from "axios";
 import { api_url } from "../constantes";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AuthContext } from "../context";
 
-export function Login({navigation}) {
+export function Login({ navigation }) {
+  const { dispatch } = useContext(AuthContext);
 
-    async function enviarDatos(){
-        const {data}= await axios.post(api_url+"/auth/login",{correo,clave})
-        if(data.error){
-            alert(data.error)
-            return
-        }
-        if (!data.accessToken || !data.refreshToken){
-            alert("Habido un error vuelva a intentar")
-            return
-        }
-        AsyncStorage.setItem('token', data.accessToken)
-        AsyncStorage.setItem('rToken', data.refreshToken)
-        navigation.navigate('Cart')
-    } 
-    const [correo, setCorreo] = useState("")
-    const [clave, setClave] = useState("")
-    
-    /*
-
-    const [ocultarPass, setOcultarPass] = useState(true)
-
-    //Función del login que llamo de la navegación
-    const loginHandle = async (username, password) => {
-        if (!username || !password) {
-        Alert.alert('Debe ingresar los datos completos')
-        } else {
-        const lging = await signIn(username, password)
-        if (lging) {
-            if (lging.error != "") {
-            Alert.alert(lging.msj)
-            }
-        }
-        }
+  async function enviarDatos() {
+    const { data } = await axios.post(api_url + "/auth/login", {
+      correo,
+      clave,
+    });
+    if (data.error) {
+      alert(data.error);
+      return;
     }
-    */
-
-
-    function irARegistro(){
-      navigation.navigate("Registro")
+    if (!data.accessToken || !data.refreshToken) {
+      alert("Habido un error vuelva a intentar");
+      return;
     }
+    dispatch({
+      type: "both",
+      payload: { token: accessToken, rToken: refreshToken },
+    });
+
+    navigation.navigate("Cart");
+  }
+  const [correo, setCorreo] = useState("");
+  const [clave, setClave] = useState("");
+
+  function irARegistro() {
+    navigation.navigate("Registro");
+  }
   return (
     <View style={styles.container}>
       <Image
@@ -62,9 +48,13 @@ export function Login({navigation}) {
         underlineColorAndroid="rgb(0,0,0,0)"
         placeholder="Correo"
         placeholderTextColor="#4b4b4b"
+        value={correo}
+        onChangeText={setCorreo}
       ></TextInput>
 
       <TextInput
+        value={clave}
+        onChangeText={setClave}
         style={styles.inputBox}
         underlineColorAndroid="rgb(0,0,0,0)"
         placeholder="Clave"
@@ -77,15 +67,13 @@ export function Login({navigation}) {
       <TouchableOpacity style={styles.btn} onPress={enviarDatos}>
         <Text style={styles.btnText}>Ingresar</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={irARegistro} >
-      <Text style={styles.txtRgt}>
-        ¿No tienes una cuenta? <Text style={styles.txt}>Registrate</Text>
-      </Text>
-
-
-
-      </TouchableOpacity>      
+      <TouchableOpacity onPress={irARegistro}>
+        <Text style={styles.txtRgt}>
+          ¿No tienes una cuenta? <Text style={styles.txt}>Registrate</Text>
+        </Text>
+      </TouchableOpacity>
     </View>
+  );
 }
 
 const styles = StyleSheet.create({
