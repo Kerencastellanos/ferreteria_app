@@ -1,7 +1,7 @@
-import { StyleSheet, View, Text, Button } from "react-native";
+import { StyleSheet, View, Text, Button, TouchableOpacity } from "react-native";
 import { useContext } from "react";
 import { CartContext } from "../context";
-import { ListaProductos, PrimaryButton } from "../components";
+import { ListaProductos } from "../components";
 
 export function Cart() {
   const { cart, setCart } = useContext(CartContext);
@@ -22,19 +22,13 @@ export function Cart() {
   return (
     <View style={styles.container}>
       <Button title="Borrar Todo" onPress={borratTodo} color={"#ff5e5e"} />
-      <ListaProductos cart={true} prods={cart} />
 
-      <PrimaryButton
-        style={{
-          width: "50%",
-          alignItems: "center",
-          position: "absolute",
-          bottom: 10,
-          right: 10,
-        }}
-      >
-        Terminar Compra
-      </PrimaryButton>
+      <ListaProductos cart={true} prods={cart} />
+      <TouchableOpacity style={{ backgroundColor: "#3b82f6", padding: 15 }}>
+        <Text style={{ color: "white", textAlign: "center" }}>
+          Terminar Compra
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 }

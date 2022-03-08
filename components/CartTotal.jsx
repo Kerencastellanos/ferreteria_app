@@ -5,7 +5,8 @@ import { Text, View } from "react-native";
 function getTotal(cart) {
   let total = 0;
   total = cart.reduce((p, c) => p + Number(c.precio) * c.cantidad, 0);
-  return total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  // return total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return total;
 }
 
 export function CartTotal() {

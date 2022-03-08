@@ -14,7 +14,7 @@ export function Home() {
       <Drawer.Screen
         options={{
           headerTitle: () => <Logo />,
-          headerRight: CartIcon,
+          headerRight: () => <CartIcon />,
           drawerIcon: ProductosIcon,
         }}
         name="Productos"

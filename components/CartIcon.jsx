@@ -1,12 +1,16 @@
 import { EvilIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { TouchableOpacity, Text } from "react-native";
-import { useContext } from "react";
+import { useContext, useMemo } from "react";
 import { CartContext } from "../context";
+function itemsAmout(cart) {
+  return cart.reduce((p, c) => p + c.cantidad, 0);
+}
 
 export function CartIcon() {
   const { navigate } = useNavigation();
   const { cart } = useContext(CartContext);
+  const items = useMemo(() => itemsAmout(cart), [cart]);
   function IrACarrito() {
     navigate("Cart");
   }
@@ -31,7 +35,7 @@ export function CartIcon() {
           height: 20,
         }}
       >
-        {cart.reduce((p, c) => p + c.cantidad, 0)}
+        {items}
       </Text>
       <EvilIcons name="cart" size={24} color="black" />
     </TouchableOpacity>
