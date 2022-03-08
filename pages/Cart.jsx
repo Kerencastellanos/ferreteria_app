@@ -5,6 +5,7 @@ import { ListaProductos } from "../components";
 
 export function Cart() {
   const { cart, setCart } = useContext(CartContext);
+  console.log(cart);
   if (!cart.length) {
     return (
       <View style={styles.center}>

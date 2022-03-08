@@ -1,14 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { createContext, useReducer, useEffect, useState } from "react";
-import { AuthReducer } from "./AuthReducer";
-
-export const initAuthValue = {
-  token: "",
-  rToken: "",
-  isAuth: false,
-  usuario: {},
-};
+import { AuthReducer, initAuthValue } from "./AuthReducer";
 
 const initContextValue = {
   dispatch({ type = "", payload = {} }) {

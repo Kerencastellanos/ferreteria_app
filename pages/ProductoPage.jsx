@@ -59,8 +59,7 @@ export function ProductoPage({ route, navigation }) {
   }, []);
 
   function addToCart() {
-    let cantd = Number(cantidad) || 1;
-    if (cantd > stock) {
+    if (Number(cantidad) > stock) {
       Alert.alert(
         "Ferreteria Movil",
         `Solo hay ${stock} unidades de este producto `
@@ -69,10 +68,19 @@ export function ProductoPage({ route, navigation }) {
     }
     let item = cart.find((e) => e.id == id);
     if (item) {
-      item.cantidad += cantd;
+      setCart((items) =>
+        items.map((e) => {
+          if (e.id == item.id) {
+            e.cantidad += Number(cantidad) || 1;
+          }
+          return e;
+        })
+      );
       return true;
     }
-    setCart((items) => items.concat({ ...route.params, cantidad: cantd }));
+    setCart((items) =>
+      items.concat({ ...route.params, cantidad: Number(cantidad) || 1 })
+    );
     return true;
   }
 

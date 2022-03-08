@@ -63,7 +63,7 @@ export function Producto({ cart = false, mini = false, producto }) {
                 onChangeText={setCant}
               />
               <TouchableOpacity onPress={removerDecart}>
-                <AntDesign name="closecircleo" size={24} color="black" />
+                <AntDesign name="closecircleo" size={24} color="gray" />
               </TouchableOpacity>
             </View>
           </View>

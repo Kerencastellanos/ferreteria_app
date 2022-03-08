@@ -1,5 +1,9 @@
-import { initAuthValue } from "./AuthContext";
-
+export const initAuthValue = {
+  token: "",
+  rToken: "",
+  isAuth: false,
+  usuario: {},
+};
 export function AuthReducer(prev = initAuthValue, { type = "", payload = {} }) {
   switch (type) {
     case "both":
