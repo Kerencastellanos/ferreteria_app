@@ -1,4 +1,11 @@
-import { Alert, Text, StyleSheet, View } from "react-native";
+import {
+  Alert,
+  Text,
+  StyleSheet,
+  View,
+  ActivityIndicator,
+  TouchableOpacity,
+} from "react-native";
 import { useState } from "react";
 import { Input, PrimaryButton } from "../components";
 import axios from "axios";
@@ -10,7 +17,13 @@ export function RecuperarClave({ route, navigation }) {
   const [clave, setClave] = useState("");
   const [clave2, setClave2] = useState("");
 
-  const [pin, setPin] = useState(0);
+  function togglePinEnviado(value = false) {
+    return (e) => {
+      setPinEnviado(value);
+    };
+  }
+
+  const [pin, setPin] = useState("");
   async function cambiarClave() {
     if (clave == clave2) {
       const { data } = await axios.post("/auth/clave", { pin, clave, correo });
@@ -30,7 +43,9 @@ export function RecuperarClave({ route, navigation }) {
   }
   async function verificarPin() {
     if (pin) {
+      setCargando(true);
       const { data } = await axios.post("/auth/pin", { pin, correo });
+      setCargando(false);
       if (data.error) {
         Alert.alert("Ferreteria movil", data.error);
         return;
@@ -46,9 +61,11 @@ export function RecuperarClave({ route, navigation }) {
   async function enviarPin() {
     if (correo) {
       try {
+        setCargando(true);
         const { data } = await axios.post("/auth/recuperar", {
           correo,
         });
+        setCargando(false);
         if (data.error) {
           Alert.alert("Ferreteria movil", data.error);
           return;
@@ -90,7 +107,14 @@ export function RecuperarClave({ route, navigation }) {
       </View>
     );
   }
-
+  const [cargando, setCargando] = useState(false);
+  if (cargando) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size={"large"} color="blue" />
+      </View>
+    );
+  }
   if (pinEnviado) {
     return (
       <View style={styles.container}>
@@ -107,6 +131,17 @@ export function RecuperarClave({ route, navigation }) {
         <PrimaryButton onPress={verificarPin} style={styles.btn}>
           Verificar Pin
         </PrimaryButton>
+        <TouchableOpacity onPress={togglePinEnviado(false)}>
+          <Text
+            style={{
+              color: "#3b82f6",
+              borderBottomColor: "#3b82f6",
+              borderBottomWidth: 1,
+            }}
+          >
+            Obtener otro pin
+          </Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -124,6 +159,17 @@ export function RecuperarClave({ route, navigation }) {
       <PrimaryButton onPress={enviarPin} style={styles.btn}>
         Enviar pin{" "}
       </PrimaryButton>
+      <TouchableOpacity onPress={togglePinEnviado(true)}>
+        <Text
+          style={{
+            color: "#3b82f6",
+            borderBottomColor: "#3b82f6",
+            borderBottomWidth: 1,
+          }}
+        >
+          Ya tengo un pin
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 }
