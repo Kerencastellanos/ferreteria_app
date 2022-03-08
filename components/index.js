@@ -9,4 +9,4 @@ export { CartIcon } from "./CartIcon";
 export { CartTotal } from "./CartTotal";
 export { PrimaryButton } from "./PrimaryButton";
 export { Input } from "./Input";
-export { ContactoIcon, ProductosIcon } from "./DrawerIcons";
+export { ContactoIcon, ProductosIcon, PerfilIcon } from "./DrawerIcons";

@@ -8,6 +8,7 @@ import { Logo } from "./Logo";
 import { AuthContext } from "../context";
 import { useContext } from "react";
 import { useNavigation } from "@react-navigation/native";
+import { LoginIcon, LogoutIcon, PerfilIcon } from "./DrawerIcons";
 
 export function CustomDrawer(props) {
   const { isAuth, dispatch } = useContext(AuthContext);
@@ -32,11 +33,23 @@ export function CustomDrawer(props) {
       <DrawerItemList {...props} />
       {isAuth ? (
         <>
-          <DrawerItem label={"Perfil"} onPress={navegar("Perfil")} />
-          <DrawerItem label={"Cerrar Session"} onPress={cerrarSession} />
+          <DrawerItem
+            label={"Perfil"}
+            onPress={navegar("Perfil")}
+            icon={PerfilIcon}
+          />
+          <DrawerItem
+            label={"Cerrar Session"}
+            onPress={cerrarSession}
+            icon={LogoutIcon}
+          />
         </>
       ) : (
-        <DrawerItem label={"Iniciar Session"} onPress={navegar("Login")} />
+        <DrawerItem
+          label={"Iniciar Session"}
+          onPress={navegar("Login")}
+          icon={LoginIcon}
+        />
       )}
     </DrawerContentScrollView>
   );

@@ -1,5 +1,7 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { useContext } from "react";
 import { CartTotal } from "../components";
+import { AuthContext } from "../context";
 import {
   Cart,
   ProductoPage,
@@ -12,6 +14,7 @@ import { Home } from "./Home";
 
 const Stack = createNativeStackNavigator();
 export function Main() {
+  const { isAuth } = useContext(AuthContext);
   return (
     <Stack.Navigator>
       <Stack.Screen
@@ -27,10 +30,17 @@ export function Main() {
         component={Cart}
       />
       <Stack.Screen name="Producto" component={ProductoPage} />
-      <Stack.Screen name="Login" component={Login} />
-      <Stack.Screen name="Registro" component={Registro} />
-      <Stack.Screen name="Perfil" component={Perfil} />
-      <Stack.Screen name="RecuperarClave" component={RecuperarClave} />
+      {isAuth ? (
+        <Stack.Group>
+          <Stack.Screen name="Perfil" component={Perfil} />
+        </Stack.Group>
+      ) : (
+        <Stack.Group>
+          <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="Registro" component={Registro} />
+          <Stack.Screen name="RecuperarClave" component={RecuperarClave} />
+        </Stack.Group>
+      )}
     </Stack.Navigator>
   );
 }
