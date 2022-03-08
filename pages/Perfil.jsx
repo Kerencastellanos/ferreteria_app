@@ -1,8 +1,16 @@
-import { StyleSheet, View, Text, Alert } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  Alert,
+  ScrollView,
+  ActivityIndicator,
+} from "react-native";
 import { useEffect, useContext, useState } from "react";
 import axios from "axios";
 import { api_url } from "../constantes";
 import { AuthContext } from "../context/AuthContext";
+import { Input, PrimaryButton } from "../components";
 export function Perfil() {
   const { token } = useContext(AuthContext);
   useEffect(() => {
@@ -33,21 +41,55 @@ export function Perfil() {
   }
   if (cargando) {
     return (
-      <View style={{ padding: 10 }}>
-        <Text>Cargando... </Text>
+      <View
+        style={{
+          padding: 10,
+          flex: 1,
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <ActivityIndicator size={"large"} color={"blue"} />
       </View>
     );
   }
   return (
-    <View style={{ padding: 10 }}>
-      <Text>1. Nombre: {usuario.nombre} </Text>
-      <Text>2. Correo: {usuario.correo} </Text>
-      <Text>3. Dirección: Col. Enmaculado concepcion</Text>
-      <Text>4. Bloque: 10, casa </Text>
-      <Text>5. Ciudad: Choluteca, Choluteca</Text>
-      <Text>6. País: Honduras</Text>
-      <Text>7. Número de telefono: 99296817 </Text>
-    </View>
+    <ScrollView
+      style={{ padding: 10, backgroundColor: "white" }}
+      contentContainerStyle={{ alignItems: "center" }}
+    >
+      <View>
+        <Text>Nombre:</Text>
+        <Input value={usuario.nombre} />
+      </View>
+      <View>
+        <Text>Correo: </Text>
+        <Input value={usuario.correo} />
+      </View>
+      <View>
+        <Text>Dirección: </Text>
+        <Input />
+      </View>
+      <View>
+        <Text>Bloque:</Text>
+        <Input />
+      </View>
+      <View>
+        <Text>Ciudad:</Text>
+
+        <Input />
+      </View>
+      <View>
+        <Text>País:</Text>
+        <Input />
+      </View>
+      <View>
+        <Text>Número de telefono: </Text>
+        <Input />
+      </View>
+
+      <PrimaryButton style={{ marginBottom: 50 }}>Actualizar</PrimaryButton>
+    </ScrollView>
   );
 }
 
