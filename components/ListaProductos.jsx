@@ -3,14 +3,20 @@ import { uuid } from "../constantes";
 import { Line } from "./Line";
 import { Producto } from "./Producto";
 
-export function ListaProductos({ prods = [], horizontal = false }) {
+export function ListaProductos({
+  cart = false,
+  prods = [],
+  horizontal = false,
+}) {
   return (
     <FlatList
       horizontal={horizontal}
       data={prods}
       keyExtractor={() => uuid()}
       ItemSeparatorComponent={!horizontal && Line}
-      renderItem={({ item }) => <Producto mini={horizontal} producto={item} />}
+      renderItem={({ item }) => (
+        <Producto cart={cart} mini={horizontal} producto={item} />
+      )}
     />
   );
 }

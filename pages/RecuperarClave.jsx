@@ -1,18 +1,43 @@
-import { Alert, TextInput, Text, StyleSheet, View } from "react-native";
+import { Alert, Text, StyleSheet, View } from "react-native";
 import { useState } from "react";
 import { Input, PrimaryButton } from "../components";
 import axios from "axios";
 
-export function RecuperarClave({ route }) {
-  const [pinenviado, setPinenviado] = useState(false);
-  const [correo, setCorreo] = useState(route.params.correo || "");
+export function RecuperarClave({ route, navigation }) {
+  const [pinEnviado, setPinEnviado] = useState(false);
+  const [pinVerificado, setPinVerificado] = useState(false);
+  const [correo, setCorreo] = useState(route.params || "");
   const [clave, setClave] = useState("");
   const [clave2, setClave2] = useState("");
 
   const [pin, setPin] = useState(0);
-  function verificarPin() {
+  async function cambiarClave() {
+    if (clave == clave2) {
+      const { data } = await axios.post("/auth/clave", { pin, clave, correo });
+
+      Alert.alert("Ferreteria movil", data.error || data.msg);
+      if (data.error) {
+        setPinEnviado(false);
+        setPinVerificado(false);
+        setPin(0);
+      }
+      if (data.msg) {
+        navigation.navigate("Login");
+      }
+      return;
+    }
+    Alert.alert("Ferreteria movil", "Las claves no coinciden ");
+  }
+  async function verificarPin() {
     if (pin) {
-      axios.post("/auth/clave");
+      const { data } = await axios.post("/auth/pin", { pin, correo });
+      if (data.error) {
+        Alert.alert("Ferreteria movil", data.error);
+        return;
+      }
+      if (data.msg) {
+        setPinVerificado(true);
+      }
       return;
     }
     Alert.alert("Ferreteria movil", "ingrese el pin");
@@ -29,8 +54,7 @@ export function RecuperarClave({ route }) {
           return;
         }
         if (data.msg) {
-          Alert.alert("Ferreteria movil", data.msg);
-          setPinenviado(true);
+          setPinEnviado(true);
           return;
         }
         Alert.alert("Ferreteria movil", "Ups ha habido un error");
@@ -43,22 +67,13 @@ export function RecuperarClave({ route }) {
     Alert.alert("Ferreteria movil", "ingrese un correo");
   }
 
-  if (pinenviado) {
+  if (pinVerificado) {
     return (
       <View style={styles.container}>
-        <Text style={styles.text}>
-          Ingrese el pin de recuperacion que recibio en su correo
-        </Text>
-        <TextInput
-          keyboardType="numeric"
-          style={styles.input}
-          value={pin}
-          onChangeText={setPin}
-          placeholder={"pin"}
-        />
+        <Text style={styles.text}>Establesca una nueva contraseña</Text>
         <Input
-          style={styles.input}
           value={clave}
+          password={true}
           onChangeText={setClave}
           placeholder={"Nueva Clave"}
         />
@@ -66,10 +81,31 @@ export function RecuperarClave({ route }) {
         <Input
           value={clave2}
           onChangeText={setClave2}
+          password={true}
           placeholder={"Confirmar Clave"}
         />
+        <PrimaryButton onPress={cambiarClave} style={styles.btn}>
+          Cambiar Clave{" "}
+        </PrimaryButton>
+      </View>
+    );
+  }
+
+  if (pinEnviado) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.text}>
+          Ingrese el pin de recuperacion que recibio en su correo
+        </Text>
+        <Input
+          keyboardType="numeric"
+          value={pin}
+          onChangeText={setPin}
+          placeholder={"pin"}
+        />
+
         <PrimaryButton onPress={verificarPin} style={styles.btn}>
-          Cambiar Clave
+          Verificar Pin
         </PrimaryButton>
       </View>
     );
@@ -79,9 +115,8 @@ export function RecuperarClave({ route }) {
       <Text style={styles.text}>
         Se le enviara un pin de recuperacion a su correo
       </Text>
-      <TextInput
+      <Input
         keyboardType="email-address"
-        style={styles.input}
         value={correo}
         onChangeText={setCorreo}
         placeholder={"correo"}

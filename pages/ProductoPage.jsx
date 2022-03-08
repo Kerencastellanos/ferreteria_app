@@ -2,12 +2,14 @@ import {
   ScrollView,
   TouchableOpacity,
   Dimensions,
+  Alert,
   StyleSheet,
   Text,
   View,
 } from "react-native";
 import {
   CartIcon,
+  Input,
   ListaProductos,
   MyImageSlider,
   PrimaryButton,
@@ -19,11 +21,11 @@ import { AuthContext, CartContext } from "../context";
 const screen = Dimensions.get("window");
 
 export function ProductoPage({ route, navigation }) {
-  const { nombre, descripcion, stock, precio, imagenes, categoria } =
+  const { id, nombre, descripcion, stock, precio, imagenes, categoria } =
     route.params;
 
-  const { setCart } = useContext(CartContext);
-
+  const { cart, setCart } = useContext(CartContext);
+  const [cantidad, setCantidad] = useState("");
   useEffect(() => {
     obtenerProds();
   }, []);
@@ -40,7 +42,9 @@ export function ProductoPage({ route, navigation }) {
   }
   const { isAuth } = useContext(AuthContext);
   function Comprar() {
-    addToCart();
+    if (!addToCart()) {
+      return;
+    }
     if (!isAuth) {
       navigation.navigate("Login");
       return;
@@ -55,7 +59,21 @@ export function ProductoPage({ route, navigation }) {
   }, []);
 
   function addToCart() {
-    setCart((items) => items.concat(route.params));
+    let cantd = Number(cantidad) || 1;
+    if (cantd > stock) {
+      Alert.alert(
+        "Ferreteria Movil",
+        `Solo hay ${stock} unidades de este producto `
+      );
+      return false;
+    }
+    let item = cart.find((e) => e.id == id);
+    if (item) {
+      item.cantidad += cantd;
+      return true;
+    }
+    setCart((items) => items.concat({ ...route.params, cantidad: cantd }));
+    return true;
   }
 
   return (
@@ -66,8 +84,15 @@ export function ProductoPage({ route, navigation }) {
         <Text> {descripcion}</Text>
         <Text style={styles.precio}>Lps.{precio}</Text>
         <Text>Disponibles: {stock}</Text>
+        <Input
+          value={cantidad}
+          onChangeText={setCantidad}
+          keyboardType="numeric"
+          style={{ backgroundColor: "#fff" }}
+          placeholder={"Cantidad a Comprar"}
+        />
         <PrimaryButton onPress={Comprar}>Comprar</PrimaryButton>
-        <TouchableOpacity onPress={addToCart} style={styles.btnOutline}>
+        <TouchableOpacity onPress={() => addToCart()} style={styles.btnOutline}>
           <Text style={styles.purple}>Agregar al Carrito</Text>
         </TouchableOpacity>
       </View>

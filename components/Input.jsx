@@ -2,6 +2,7 @@ import { TextInput, StyleSheet, TouchableOpacity, View } from "react-native";
 import { useState } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 export function Input({
+  keyboardType = "default",
   password = false,
   value,
   style,
@@ -15,6 +16,7 @@ export function Input({
   return (
     <View style={[styles.box, style]}>
       <TextInput
+        keyboardType={keyboardType}
         style={styles.input}
         secureTextEntry={secure}
         value={value}

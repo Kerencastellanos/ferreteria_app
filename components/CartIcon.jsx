@@ -31,7 +31,7 @@ export function CartIcon() {
           height: 20,
         }}
       >
-        {cart.length}
+        {cart.reduce((p, c) => p + c.cantidad, 0)}
       </Text>
       <EvilIcons name="cart" size={24} color="black" />
     </TouchableOpacity>

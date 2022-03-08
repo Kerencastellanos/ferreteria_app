@@ -1,14 +1,13 @@
 import { StyleSheet } from "react-native";
-import { useState, useContext, useLayoutEffect } from "react";
-import { View, Text, Image, TouchableOpacity } from "react-native";
+import { useState, useContext, useEffect } from "react";
+import { ScrollView, Text, Image, TouchableOpacity } from "react-native";
 import axios from "axios";
-import { api_url } from "../constantes";
 import { AuthContext } from "../context";
 import { Input } from "../components";
 
 export function Login({ navigation }) {
   const { dispatch, isAuth } = useContext(AuthContext);
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (isAuth) {
       navigation.navigate("Productos");
     }
@@ -43,7 +42,7 @@ export function Login({ navigation }) {
     navigation.navigate("Registro");
   }
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <Image
         style={styles.logo}
         source={require("../assets/helmet.png")}
@@ -51,7 +50,12 @@ export function Login({ navigation }) {
 
       <Text style={styles.logoText}>Login Bienvenido</Text>
 
-      <Input placeholder="Correo" value={correo} onChangeText={setCorreo} />
+      <Input
+        placeholder="Correo"
+        value={correo}
+        onChangeText={setCorreo}
+        keyboardType={"email-address"}
+      />
 
       <Input
         value={clave}
@@ -68,17 +72,17 @@ export function Login({ navigation }) {
         <Text style={styles.btnText}>Ingresar</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={irARegistro}>
-        <Text style={styles.txtRgt}>
+        <Text>
           ¿No tienes una cuenta? <Text style={styles.txt}>Registrate</Text>
         </Text>
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    minHeight: "100%",
     backgroundColor: "#fff",
     //justifyContent: 'center',
     alignItems: "center",
@@ -87,7 +91,7 @@ const styles = StyleSheet.create({
     width: 70,
     height: 70,
     padding: 50,
-    marginTop: 130,
+    marginTop: 30,
   },
   logoText: {
     marginVertical: 15,
@@ -95,18 +99,7 @@ const styles = StyleSheet.create({
     color: "#ffffff",
     fontWeight: "bold",
   },
-  inputBox: {
-    width: "80%",
-    //textAlign:"center",
-    //borderRadius: 15,
-    backgroundColor: "#f3f3f3",
-    paddingHorizontal: 19,
-    paddingVertical: 15,
-    fontSize: 18,
-    borderRadius: 5,
-    color: "#1d1d1d",
-    marginVertical: 10,
-  },
+
   btn: {
     width: "80%",
     backgroundColor: "#00388b",
@@ -126,8 +119,5 @@ const styles = StyleSheet.create({
   txt: {
     color: "#0080FF",
     fontWeight: "500",
-  },
-  txtRgt: {
-    marginTop: 60,
   },
 });

@@ -22,7 +22,8 @@ export function Cart() {
   return (
     <View style={styles.container}>
       <Button title="Borrar Todo" onPress={borratTodo} color={"#ff5e5e"} />
-      <ListaProductos prods={cart} />
+      <ListaProductos cart={true} prods={cart} />
+
       <PrimaryButton
         style={{
           width: "50%",

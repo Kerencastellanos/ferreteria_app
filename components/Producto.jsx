@@ -1,13 +1,24 @@
 import { TouchableOpacity, Image, StyleSheet, Text, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { AntDesign } from "@expo/vector-icons";
+import { Swipeable } from "react-native-gesture-handler";
 
-export function Producto({ mini = false, producto }) {
+function RightActions() {
+  return (
+    <View>
+      <Text>Eliminar</Text>
+    </View>
+  );
+}
+
+export function Producto({ cart = false, mini = false, producto }) {
   const navigation = useNavigation();
-  const { nombre, descripcion, stock, precio, imagenes, categoria } = producto;
+  const { cantidad, nombre, descripcion, stock, precio, imagenes, categoria } =
+    producto;
   function verProducto() {
     navigation.navigate("Producto", producto);
   }
+
   return (
     <TouchableOpacity
       onPress={verProducto}
@@ -28,7 +39,11 @@ export function Producto({ mini = false, producto }) {
           <Text>{nombre}</Text>
           <Text> {descripcion}</Text>
           <Text style={styles.precio}>Lps.{precio}</Text>
-          <Text>Disponibles: {stock}</Text>
+          {cart ? (
+            <Text>Cantidad: {cantidad ?? 1}</Text>
+          ) : (
+            <Text>Disponibles: {stock}</Text>
+          )}
         </View>
       ) : (
         <Text>{nombre}</Text>

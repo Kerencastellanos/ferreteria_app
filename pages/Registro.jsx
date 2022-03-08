@@ -1,14 +1,14 @@
 import axios from "axios";
 import { useState, useContext } from "react";
 import {
-  View,
+  ScrollView,
   Text,
-  TextInput,
   Image,
   TouchableOpacity,
   StyleSheet,
   Alert,
 } from "react-native";
+import { Input } from "../components";
 import { AuthContext } from "../context";
 
 export function Registro({ navigation }) {
@@ -19,6 +19,7 @@ export function Registro({ navigation }) {
   const [nombre, setNombre] = useState("");
   const [correo, setCorreo] = useState("");
   const [clave, setClave] = useState("");
+  const [clave2, setClave2] = useState("");
   async function crearUsuario() {
     try {
       const { data } = await axios.post("/auth/registro", {
@@ -47,7 +48,7 @@ export function Registro({ navigation }) {
     }
   }
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <Image
         style={styles.logo}
         source={require("../assets/helmet.png")}
@@ -55,50 +56,39 @@ export function Registro({ navigation }) {
 
       <Text style={styles.logoText}>Login Bienvenido</Text>
 
-      <TextInput
-        value={nombre}
-        onChangeText={setNombre}
-        style={styles.inputBox}
-        underlineColorAndroid="rgb(0,0,0,0)"
-        placeholder="Nombre"
-        placeholderTextColor="#4b4b4b"
-      ></TextInput>
-      <TextInput
-        value={correo}
-        onChangeText={setCorreo}
-        style={styles.inputBox}
-        underlineColorAndroid="rgb(0,0,0,0)"
-        placeholder="Correo"
-        placeholderTextColor="#4b4b4b"
-      ></TextInput>
+      <Input value={nombre} onChangeText={setNombre} placeholder="Nombre" />
+      <Input value={correo} onChangeText={setCorreo} placeholder="Correo" />
 
-      <TextInput
+      <Input
         value={clave}
         onChangeText={setClave}
-        style={styles.inputBox}
-        underlineColorAndroid="rgb(0,0,0,0)"
         placeholder="Clave"
-        secureTextEntry={true}
-        placeholderTextColor="#4b4b4b"
-      ></TextInput>
+        password={true}
+      />
+      <Input
+        value={clave2}
+        onChangeText={setClave2}
+        placeholder="Confimar Clave"
+        password={true}
+      />
 
       <TouchableOpacity style={styles.btn} onPress={crearUsuario}>
         <Text style={styles.btnText}>Ingresar</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={irALogin}>
-        <Text style={styles.txtRgt}>
+        <Text>
           ¿Ya tienes una cuenta?{" "}
           <Text style={styles.txt}>Inicio de Sesión</Text>
         </Text>
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: "#fff",
+    minHeight: "100%",
     //justifyContent: 'center',
     alignItems: "center",
   },
@@ -106,7 +96,7 @@ const styles = StyleSheet.create({
     width: 70,
     height: 70,
     padding: 50,
-    marginTop: 130,
+    marginTop: 30,
   },
   logoText: {
     marginVertical: 15,
@@ -114,18 +104,7 @@ const styles = StyleSheet.create({
     color: "#ffffff",
     fontWeight: "bold",
   },
-  inputBox: {
-    width: "80%",
-    //textAlign:"center",
-    //borderRadius: 15,
-    backgroundColor: "#f3f3f3",
-    paddingHorizontal: 19,
-    borderRadius: 5,
-    paddingVertical: 15,
-    fontSize: 18,
-    color: "#1d1d1d",
-    marginVertical: 10,
-  },
+
   btn: {
     width: "80%",
     backgroundColor: "#00388b",
@@ -145,8 +124,5 @@ const styles = StyleSheet.create({
   txt: {
     color: "#0080FF",
     fontWeight: "500",
-  },
-  txtRgt: {
-    marginTop: 60,
   },
 });
