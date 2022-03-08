@@ -57,7 +57,12 @@ export function ProductoPage({ route, navigation }) {
       headerRight: () => <CartIcon />,
     });
   }, []);
-
+  function agregarACarrito() {
+    let res = addToCart();
+    if (res) {
+      Alert.alert("Ferreteria Movil", "Producto Agragado al Carrito");
+    }
+  }
   function addToCart() {
     if (Number(cantidad) > stock) {
       Alert.alert(
@@ -100,7 +105,7 @@ export function ProductoPage({ route, navigation }) {
           placeholder={"Cantidad a Comprar"}
         />
         <PrimaryButton onPress={Comprar}>Comprar</PrimaryButton>
-        <TouchableOpacity onPress={() => addToCart()} style={styles.btnOutline}>
+        <TouchableOpacity onPress={agregarACarrito} style={styles.btnOutline}>
           <Text style={styles.purple}>Agregar al Carrito</Text>
         </TouchableOpacity>
       </View>
