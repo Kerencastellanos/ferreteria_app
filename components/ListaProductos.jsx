@@ -5,16 +5,12 @@ import { Producto } from "./Producto";
 
 export function ListaProductos({ prods = [], horizontal = false }) {
   return (
-    <View>
-      <FlatList
-        horizontal={horizontal}
-        data={prods}
-        keyExtractor={() => uuid()}
-        ItemSeparatorComponent={!horizontal && Line}
-        renderItem={({ item }) => (
-          <Producto mini={horizontal} producto={item} />
-        )}
-      />
-    </View>
+    <FlatList
+      horizontal={horizontal}
+      data={prods}
+      keyExtractor={() => uuid()}
+      ItemSeparatorComponent={!horizontal && Line}
+      renderItem={({ item }) => <Producto mini={horizontal} producto={item} />}
+    />
   );
 }

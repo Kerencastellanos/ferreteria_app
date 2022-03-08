@@ -9,7 +9,6 @@ import {
   StyleSheet,
   Alert,
 } from "react-native";
-import { api_url } from "../constantes";
 import { AuthContext } from "../context";
 
 export function Registro({ navigation }) {
@@ -22,7 +21,7 @@ export function Registro({ navigation }) {
   const [clave, setClave] = useState("");
   async function crearUsuario() {
     try {
-      const { data } = await axios.post(api_url + "/auth/registro", {
+      const { data } = await axios.post("/auth/registro", {
         nombre,
         correo,
         clave,

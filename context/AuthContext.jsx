@@ -1,7 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { createContext, useReducer, useEffect, useState } from "react";
-import { api_url } from "../constantes";
 import { AuthReducer } from "./AuthReducer";
 
 export const initAuthValue = {
@@ -32,7 +31,7 @@ export function AuthProvider({ children }) {
     const token = await AsyncStorage.getItem("token");
     setLoaded(true);
     if (rToken && token) {
-      const { data } = await axios.get(api_url + "/auth/me", {
+      const { data } = await axios.get("/auth/me", {
         headers: {
           Authentication: token,
         },
@@ -41,7 +40,7 @@ export function AuthProvider({ children }) {
       if (data.error) {
         console.log("token expiro");
         // renovar token
-        const { data } = await axios.post(api_url + "/auth/refresh", {
+        const { data } = await axios.post("/auth/refresh", {
           refreshToken: rToken,
         });
         if (data.error) {

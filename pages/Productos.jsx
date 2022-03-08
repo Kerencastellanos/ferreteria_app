@@ -2,7 +2,6 @@ import { Text, ActivityIndicator, StyleSheet, View } from "react-native";
 import { useEffect, useState } from "react";
 import { Buscador, ListaProductos } from "../components";
 import axios from "axios";
-import { api_url } from "../constantes";
 
 export function Productos() {
   const [msg, setMsg] = useState("");
@@ -14,7 +13,7 @@ export function Productos() {
   }, []);
   async function SolicitarProds() {
     try {
-      const { data } = await axios.get(api_url + "/productos");
+      const { data } = await axios.get("/productos");
       setProductos(data);
       setMsg("");
     } catch (error) {
@@ -27,7 +26,7 @@ export function Productos() {
     setMsg(undefined);
     setCargando(true);
     try {
-      const { data } = await axios.get(api_url + `/productos?nombre=${buscar}`);
+      const { data } = await axios.get(`/productos?nombre=${buscar}`);
       setProductos(data);
       setMsg("");
       if (!data.length) {

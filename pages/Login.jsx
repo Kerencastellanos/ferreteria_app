@@ -1,15 +1,20 @@
 import { StyleSheet } from "react-native";
-import { useState, useContext } from "react";
-import { View, Text, TextInput, Image, TouchableOpacity } from "react-native";
+import { useState, useContext, useLayoutEffect } from "react";
+import { View, Text, Image, TouchableOpacity } from "react-native";
 import axios from "axios";
 import { api_url } from "../constantes";
 import { AuthContext } from "../context";
+import { Input } from "../components";
 
 export function Login({ navigation }) {
   const { dispatch, isAuth } = useContext(AuthContext);
-
+  useLayoutEffect(() => {
+    if (isAuth) {
+      navigation.navigate("Productos");
+    }
+  }, []);
   async function enviarDatos() {
-    const { data } = await axios.post(api_url + "/auth/login", {
+    const { data } = await axios.post("/auth/login", {
       correo,
       clave,
     });
@@ -31,6 +36,9 @@ export function Login({ navigation }) {
   const [correo, setCorreo] = useState("");
   const [clave, setClave] = useState("");
 
+  function irARecuperarClave() {
+    navigation.navigate("RecuperarClave", correo);
+  }
   function irARegistro() {
     navigation.navigate("Registro");
   }
@@ -43,26 +51,18 @@ export function Login({ navigation }) {
 
       <Text style={styles.logoText}>Login Bienvenido</Text>
 
-      <TextInput
-        style={styles.inputBox}
-        underlineColorAndroid="rgb(0,0,0,0)"
-        placeholder="Correo"
-        placeholderTextColor="#4b4b4b"
-        value={correo}
-        onChangeText={setCorreo}
-      ></TextInput>
+      <Input placeholder="Correo" value={correo} onChangeText={setCorreo} />
 
-      <TextInput
+      <Input
         value={clave}
         onChangeText={setClave}
-        style={styles.inputBox}
-        underlineColorAndroid="rgb(0,0,0,0)"
         placeholder="Clave"
-        secureTextEntry={true}
-        placeholderTextColor="#4b4b4b"
-      ></TextInput>
+        password={true}
+      />
 
-      <Text style={styles.txt}>¿Olvide mi contraseña?</Text>
+      <TouchableOpacity onPress={irARecuperarClave}>
+        <Text style={styles.txt}>¿Olvide mi contraseña?</Text>
+      </TouchableOpacity>
 
       <TouchableOpacity style={styles.btn} onPress={enviarDatos}>
         <Text style={styles.btnText}>Ingresar</Text>
