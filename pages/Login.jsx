@@ -5,7 +5,7 @@ import axios from "axios";
 import { AuthContext } from "../context";
 import { Input } from "../components";
 
-export function Login({ navigation }) {
+export function Login({ navigation, route }) {
   const { dispatch, isAuth } = useContext(AuthContext);
   useEffect(() => {
     if (isAuth) {
@@ -32,7 +32,7 @@ export function Login({ navigation }) {
 
     navigation.navigate("Cart");
   }
-  const [correo, setCorreo] = useState("");
+  const [correo, setCorreo] = useState(route.params || "");
   const [clave, setClave] = useState("");
 
   function irARecuperarClave() {

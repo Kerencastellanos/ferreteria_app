@@ -11,31 +11,24 @@ import { Input, PrimaryButton } from "../components";
 import axios from "axios";
 
 export function RecuperarClave({ route, navigation }) {
-  const [pinEnviado, setPinEnviado] = useState(false);
-  const [pinVerificado, setPinVerificado] = useState(false);
+  const [page, setPage] = useState("");
   const [correo, setCorreo] = useState(route.params || "");
   const [clave, setClave] = useState("");
   const [clave2, setClave2] = useState("");
 
-  function togglePinEnviado(value = false) {
-    return (e) => {
-      setPinEnviado(value);
-    };
-  }
-
   const [pin, setPin] = useState("");
   async function cambiarClave() {
     if (clave == clave2) {
+      setPage("cargando");
       const { data } = await axios.post("/auth/clave", { pin, clave, correo });
 
       Alert.alert("Ferreteria movil", data.error || data.msg);
+      setPage("pinverficado");
       if (data.error) {
-        setPinEnviado(false);
-        setPinVerificado(false);
         setPin(0);
       }
       if (data.msg) {
-        navigation.navigate("Login");
+        navigation.navigate("Login", correo);
       }
       return;
     }
@@ -43,15 +36,21 @@ export function RecuperarClave({ route, navigation }) {
   }
   async function verificarPin() {
     if (pin) {
-      setCargando(true);
-      const { data } = await axios.post("/auth/pin", { pin, correo });
-      setCargando(false);
-      if (data.error) {
-        Alert.alert("Ferreteria movil", data.error);
-        return;
-      }
-      if (data.msg) {
-        setPinVerificado(true);
+      try {
+        setPage("cargando");
+        const { data } = await axios.post("/auth/pin", { pin, correo });
+
+        setPage("pinenviado");
+        if (data.error) {
+          Alert.alert("Ferreteria movil", data.error);
+          return;
+        }
+        if (data.msg) {
+          setPage("pinverficado");
+        }
+      } catch (error) {
+        setPage("pinenviado");
+        Alert.alert("Ferreteria movil", error.message);
       }
       return;
     }
@@ -61,21 +60,22 @@ export function RecuperarClave({ route, navigation }) {
   async function enviarPin() {
     if (correo) {
       try {
-        setCargando(true);
+        setPage("cargando");
         const { data } = await axios.post("/auth/recuperar", {
           correo,
         });
-        setCargando(false);
+        setPage("");
         if (data.error) {
           Alert.alert("Ferreteria movil", data.error);
           return;
         }
         if (data.msg) {
-          setPinEnviado(true);
+          setPage("pinenviado");
           return;
         }
         Alert.alert("Ferreteria movil", "Ups ha habido un error");
       } catch (error) {
+        setPage("");
         Alert.alert("Ferreteria movil", error.message);
       }
 
@@ -84,94 +84,94 @@ export function RecuperarClave({ route, navigation }) {
     Alert.alert("Ferreteria movil", "ingrese un correo");
   }
 
-  if (pinVerificado) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.text}>Establesca una nueva contraseña</Text>
-        <Input
-          value={clave}
-          password={true}
-          onChangeText={setClave}
-          placeholder={"Nueva Clave"}
-        />
+  switch (page) {
+    case "pinverficado":
+      return (
+        <View style={styles.container}>
+          <Text style={styles.text}>Establesca una nueva contraseña</Text>
+          <Input
+            value={clave}
+            password={true}
+            onChangeText={setClave}
+            placeholder={"Nueva Clave"}
+          />
 
-        <Input
-          value={clave2}
-          onChangeText={setClave2}
-          password={true}
-          placeholder={"Confirmar Clave"}
-        />
-        <PrimaryButton onPress={cambiarClave} style={styles.btn}>
-          Cambiar Clave{" "}
-        </PrimaryButton>
-      </View>
-    );
-  }
-  const [cargando, setCargando] = useState(false);
-  if (cargando) {
-    return (
-      <View style={styles.container}>
-        <ActivityIndicator size={"large"} color="blue" />
-      </View>
-    );
-  }
-  if (pinEnviado) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.text}>
-          Ingrese el pin de recuperacion que recibio en su correo
-        </Text>
-        <Input
-          keyboardType="numeric"
-          value={pin}
-          onChangeText={setPin}
-          placeholder={"pin"}
-        />
-
-        <PrimaryButton onPress={verificarPin} style={styles.btn}>
-          Verificar Pin
-        </PrimaryButton>
-        <TouchableOpacity onPress={togglePinEnviado(false)}>
-          <Text
-            style={{
-              color: "#3b82f6",
-              borderBottomColor: "#3b82f6",
-              borderBottomWidth: 1,
-            }}
-          >
-            Obtener otro pin
+          <Input
+            value={clave2}
+            onChangeText={setClave2}
+            password={true}
+            placeholder={"Confirmar Clave"}
+          />
+          <PrimaryButton onPress={cambiarClave} style={styles.btn}>
+            Cambiar Clave{" "}
+          </PrimaryButton>
+        </View>
+      );
+    case "pinenviado":
+      return (
+        <View style={styles.container}>
+          <Text style={styles.text}>
+            Ingrese el pin de recuperacion que recibio en su correo
           </Text>
-        </TouchableOpacity>
-      </View>
-    );
+          <Input
+            keyboardType="numeric"
+            value={pin}
+            onChangeText={setPin}
+            placeholder={"pin"}
+          />
+
+          <PrimaryButton onPress={verificarPin} style={styles.btn}>
+            Verificar Pin
+          </PrimaryButton>
+          <TouchableOpacity onPress={() => setPage("")}>
+            <Text
+              style={{
+                color: "#3b82f6",
+                borderBottomColor: "#3b82f6",
+                borderBottomWidth: 1,
+              }}
+            >
+              Obtener otro pin
+            </Text>
+          </TouchableOpacity>
+        </View>
+      );
+    case "cargando":
+      return (
+        <View style={styles.container}>
+          <ActivityIndicator size={"large"} color="blue" />
+        </View>
+      );
+
+    default:
+      return (
+        <View style={styles.container}>
+          <Text style={styles.text}>
+            Se le enviara un pin de recuperacion a su correo
+          </Text>
+          <Input
+            keyboardType="email-address"
+            value={correo}
+            onChangeText={setCorreo}
+            placeholder={"correo"}
+          />
+          <PrimaryButton onPress={enviarPin} style={styles.btn}>
+            Enviar pin{" "}
+          </PrimaryButton>
+          <TouchableOpacity onPress={() => setPage("pinenviado")}>
+            <Text
+              style={{
+                color: "#3b82f6",
+                borderBottomColor: "#3b82f6",
+                borderBottomWidth: 1,
+              }}
+            >
+              Ya tengo un pin
+            </Text>
+          </TouchableOpacity>
+        </View>
+      );
   }
-  return (
-    <View style={styles.container}>
-      <Text style={styles.text}>
-        Se le enviara un pin de recuperacion a su correo
-      </Text>
-      <Input
-        keyboardType="email-address"
-        value={correo}
-        onChangeText={setCorreo}
-        placeholder={"correo"}
-      />
-      <PrimaryButton onPress={enviarPin} style={styles.btn}>
-        Enviar pin{" "}
-      </PrimaryButton>
-      <TouchableOpacity onPress={togglePinEnviado(true)}>
-        <Text
-          style={{
-            color: "#3b82f6",
-            borderBottomColor: "#3b82f6",
-            borderBottomWidth: 1,
-          }}
-        >
-          Ya tengo un pin
-        </Text>
-      </TouchableOpacity>
-    </View>
-  );
 }
 
 const styles = StyleSheet.create({
