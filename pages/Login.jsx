@@ -1,17 +1,13 @@
 import { StyleSheet } from "react-native";
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext } from "react";
 import { ScrollView, Text, Image, TouchableOpacity } from "react-native";
 import axios from "axios";
 import { AuthContext } from "../context";
 import { Input } from "../components";
 
 export function Login({ navigation, route }) {
-  const { dispatch, isAuth } = useContext(AuthContext);
-  useEffect(() => {
-    if (isAuth) {
-      navigation.navigate("Productos");
-    }
-  }, []);
+  const { setAToken, setRToken } = useContext(AuthContext);
+
   async function enviarDatos() {
     const { data } = await axios.post("/auth/login", {
       correo,
@@ -25,11 +21,8 @@ export function Login({ navigation, route }) {
       alert("Habido un error vuelva a intentar");
       return;
     }
-    dispatch({
-      type: "both",
-      payload: { token: data.accessToken, rToken: data.refreshToken },
-    });
-
+    setAToken(data.accessToken);
+    setRToken(data.refreshToken);
     navigation.navigate("Cart");
   }
   const [correo, setCorreo] = useState(route.params || "");

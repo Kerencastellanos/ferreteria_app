@@ -10,21 +10,18 @@ import { useContext } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { LoginIcon, LogoutIcon, PerfilIcon } from "./DrawerIcons";
 import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export function CustomDrawer(props) {
-  const { isAuth, dispatch, token } = useContext(AuthContext);
+  const { isAuth, setRToken, setAToken } = useContext(AuthContext);
   const { navigate } = useNavigation();
   async function cerrarSession() {
-    const { data } = await axios.delete("/auth/logout", {
-      headers: {
-        Authentication: token,
-      },
-    });
+    const { data } = await axios.delete("/auth/logout");
     Alert.alert("Ferreteria Movil", data.error || data.msg);
-    dispatch({
-      type: "both",
-      payload: { rToken: "", token: "" },
-    });
+    await AsyncStorage.removeItem("aToken");
+    await AsyncStorage.removeItem("rToken");
+    setRToken("");
+    setAToken("");
   }
   function navegar(screen = "") {
     return (e) => {

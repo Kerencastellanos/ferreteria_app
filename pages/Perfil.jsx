@@ -9,21 +9,15 @@ import {
 import { useEffect, useContext, useState } from "react";
 import axios from "axios";
 import { api_url } from "../constantes";
-import { AuthContext } from "../context/AuthContext";
 import { Input, PrimaryButton } from "../components";
 export function Perfil() {
-  const { token } = useContext(AuthContext);
   useEffect(() => {
     getUserInfo();
   }, []);
   const [cargando, setCargando] = useState(true);
   const [usuario, setUsuario] = useState({});
   async function getUserInfo() {
-    const { data } = await axios.get(api_url + "/auth/me", {
-      headers: {
-        Authentication: token,
-      },
-    });
+    const { data } = await axios.get(api_url + "/auth/me");
     console.log(data);
     setCargando(false);
     if (data.error) {

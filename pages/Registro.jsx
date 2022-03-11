@@ -15,7 +15,7 @@ export function Registro({ navigation }) {
   function irALogin() {
     navigation.navigate("Login");
   }
-  const { dispatch } = useContext(AuthContext);
+  const { setAToken, setRToken } = useContext(AuthContext);
   const [nombre, setNombre] = useState("");
   const [correo, setCorreo] = useState("");
   const [clave, setClave] = useState("");
@@ -38,10 +38,9 @@ export function Registro({ navigation }) {
         );
         return;
       }
-      dispatch({
-        type: "both",
-        payload: { token: data.accessToken, rToken: data.refreshToken },
-      });
+      setAToken(data.accessToken);
+      setRToken(data.refreshToken);
+
       navigation.navigate("Cart");
     } catch (error) {
       Alert.alert("Ferreteria Movil", error.message);

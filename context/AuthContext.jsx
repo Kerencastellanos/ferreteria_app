@@ -1,81 +1,101 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-import { createContext, useReducer, useEffect, useState } from "react";
-import { AuthReducer, initAuthValue } from "./AuthReducer";
+import { createContext, useEffect, useState } from "react";
 
-const initContextValue = {
-  dispatch({ type = "", payload = {} }) {
-    return initAuthValue;
-  },
-  ...initAuthValue,
-};
-
-export const AuthContext = createContext(initContextValue);
+export const AuthContext = createContext({
+  isAuth: false,
+  setIsAuth(isAuth = true) {},
+  setAToken(aToken = "") {},
+  setRToken(rToken = "") {},
+  rToken: "",
+  aToken: "",
+  gotoLogin: false,
+  setUser(user) {},
+  user: { name: "", email: "", imageUrl: "" },
+});
 
 export function AuthProvider({ children }) {
-  const [state, dispatch] = useReducer(AuthReducer, initAuthValue);
-  const [loaded, setLoaded] = useState(false);
+  const [gotoLogin, setGotoLogin] = useState(false);
+  const [user, setUser] = useState({});
+  const [aToken, setAToken] = useState("");
+  const [rToken, setRToken] = useState("");
+  const [isAuth, setIsAuth] = useState(false);
   useEffect(() => {
-    loadTokens();
-  }, []);
-
-  async function loadTokens() {
-    const rToken = await AsyncStorage.getItem("rToken");
-    const token = await AsyncStorage.getItem("token");
-    setLoaded(true);
-    if (rToken && token) {
-      const { data } = await axios.get("/auth/me", {
-        headers: {
-          Authentication: token,
-        },
-      });
-      // token expiro
-      if (data.error) {
-        console.log("token expiro");
-        // renovar token
-        const { data } = await axios.post("/auth/refresh", {
-          refreshToken: rToken,
-        });
-        if (data.error) {
-          console.error(data.error);
-          // refresh token es invalido
-          dispatch({
-            type: "both",
-            payload: { rToken: "", token: "" },
-          });
-          return;
-        }
-        if (data.accessToken) {
-          dispatch({
-            type: "both",
-            payload: { rToken, token: data.accessToken },
-          });
-        }
-        return;
-      }
-
-      //token valido
-      console.log("tokens ok");
-      dispatch({
-        type: "both",
-        payload: { rToken, token },
-      });
+    axios.defaults.headers = {
+      Authentication: aToken,
+    };
+    checkAuth();
+    saveTokens();
+  }, [aToken, rToken]);
+  async function saveTokens() {
+    if (aToken && rToken) {
+      AsyncStorage.setItem("aToken", aToken);
+      AsyncStorage.setItem("rToken", rToken);
     }
   }
 
   useEffect(() => {
-    dispatch({
-      type: "isAuth",
-      payload: { isAuth: state.rToken && state.token },
-    });
-    if (loaded) {
-      AsyncStorage.setItem("rToken", state.rToken);
-      AsyncStorage.setItem("token", state.token);
+    CheckTokens();
+  }, []);
+
+  async function CheckTokens() {
+    const a_Token = await AsyncStorage.getItem("aToken");
+    const r_Token = await AsyncStorage.getItem("rToken");
+    console.log("a_Token: ", a_Token, "r_Token: ", r_Token);
+    if (a_Token && r_Token) {
+      console.log("tokens loaded from storage");
+      setAToken(a_Token);
+      setRToken(r_Token);
     }
-  }, [state.rToken, state.token]);
+  }
+
+  async function checkAuth() {
+    console.log("rToken: ", rToken);
+    if (aToken && rToken) {
+      console.log("checkAuth");
+      try {
+        const { data } = await axios.get("/auth/me");
+
+        console.log("data: ", data);
+        if (data.usuario) {
+          console.log("auth true");
+          setUser(data.usuario);
+          setIsAuth(true);
+          return;
+        }
+        console.log("refresh Token");
+        const { data: data2 } = await axios.post("/auth/refresh", {
+          refreshToken: rToken,
+        });
+        console.log("data2: ", data2);
+        if (data2.accessToken) {
+          console.log("new AToken");
+          setAToken(data2.accessToken);
+          return;
+        }
+        setGotoLogin(true);
+      } catch (error) {
+        console.warn(error);
+      }
+      return;
+    }
+    setIsAuth(false);
+  }
 
   return (
-    <AuthContext.Provider value={{ ...state, dispatch }}>
+    <AuthContext.Provider
+      value={{
+        isAuth,
+        setIsAuth,
+        gotoLogin,
+        user,
+        setUser,
+        aToken,
+        rToken,
+        setAToken,
+        setRToken,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
