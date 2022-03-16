@@ -52,10 +52,10 @@ export function AuthProvider({ children }) {
 
   async function checkAuth() {
     console.log("rToken: ", rToken);
-    if (aToken && rToken) {
+    if (rToken) {
       console.log("checkAuth");
       try {
-        const { data } = await axios.get("/auth/me");
+        const { data } = await axios.get("/usuarios/me");
 
         console.log("data: ", data);
         if (data.usuario) {

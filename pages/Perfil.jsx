@@ -6,21 +6,51 @@ import {
   ScrollView,
   ActivityIndicator,
 } from "react-native";
-import { useEffect, useState, useLayoutEffect, useContext } from "react";
+import {
+  useReducer,
+  useEffect,
+  useState,
+  useLayoutEffect,
+  useContext,
+} from "react";
 import axios from "axios";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Input, PrimaryButton } from "../components";
 import { AuthContext } from "../context";
+import { compareObjs } from "../constantes";
 export function Perfil({ navigation }) {
+  const [usuario, setUsuario] = useReducer(
+    (preUsuario, newProp) => {
+      return { ...preUsuario, ...newProp };
+    },
+    {
+      nombre: "",
+      correo: "",
+      imagenUrl: "",
+      telefono: "",
+      bloque: "",
+      ciudad: "",
+      colonia: "",
+      direccion: "",
+    }
+  );
+
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerRight: () => (
-        <TouchableOpacity>
-          <Text style={{ color: "#0984e3" }}>Actualizar</Text>
-        </TouchableOpacity>
-      ),
+      headerRight: () =>
+        !compareObjs(usuario, usuarioCopy) ? (
+          <TouchableOpacity
+            onPress={() => {
+              console.log(usuario);
+            }}
+          >
+            <Text style={{ color: "#0984e3" }}>Actualizar</Text>
+          </TouchableOpacity>
+        ) : (
+          <></>
+        ),
     });
-  }, []);
+  }, [usuario]);
 
   // funcion inicial
   useEffect(() => {
@@ -29,13 +59,14 @@ export function Perfil({ navigation }) {
 
   // variables
   const [cargando, setCargando] = useState(true);
-  const [usuario, setUsuario] = useState({});
+  const [usuarioCopy, setUsuarioCopy] = useState({});
+
   const [collapsed, setCollapsed] = useState(true);
   const { checkAuth } = useContext(AuthContext);
 
   // funciones
   async function getUserInfo() {
-    const { data } = await axios.get("/auth/me");
+    const { data } = await axios.get("/usuarios/me");
     console.log(data);
     setCargando(false);
 
@@ -43,6 +74,7 @@ export function Perfil({ navigation }) {
       checkAuth();
       return;
     }
+    setUsuarioCopy(data.usuario);
     setUsuario(data.usuario);
   }
   // renderizar
@@ -67,16 +99,26 @@ export function Perfil({ navigation }) {
     >
       <View>
         <Text>Nombre:</Text>
-        <Input value={usuario.nombre} />
+        <Input
+          value={usuario.nombre}
+          onChangeText={(nombre) => setUsuario({ nombre })}
+        />
       </View>
       <View>
         <Text>Correo: </Text>
-        <Input value={usuario.correo} />
+        <Input
+          value={usuario.correo}
+          onChangeText={(correo) => setUsuario({ correo })}
+        />
       </View>
 
       <View>
         <Text>Número de telefono: </Text>
-        <Input keyboardType="numeric" />
+        <Input
+          keyboardType="numeric"
+          value={usuario.telefono}
+          onChangeText={(telefono) => setUsuario({ telefono })}
+        />
       </View>
       <TouchableOpacity
         style={{
@@ -93,19 +135,31 @@ export function Perfil({ navigation }) {
         <>
           <View>
             <Text>Ciudad:</Text>
-            <Input />
+            <Input
+              value={usuario.ciudad}
+              onChangeText={(ciudad) => setUsuario({ ciudad })}
+            />
           </View>
           <View>
             <Text>Colonia:</Text>
-            <Input />
+            <Input
+              value={usuario.colonia}
+              onChangeText={(colonia) => setUsuario({ colonia })}
+            />
           </View>
           <View>
             <Text>Bloque:</Text>
-            <Input />
+            <Input
+              value={usuario.bloque}
+              onChangeText={(bloque) => setUsuario({ bloque })}
+            />
           </View>
           <View>
             <Text>Detalles: </Text>
-            <Input />
+            <Input
+              value={usuario.direccion}
+              onChangeText={(direccion) => setUsuario({ direccion })}
+            />
           </View>
         </>
       )}
