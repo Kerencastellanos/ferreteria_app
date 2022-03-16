@@ -1,38 +1,51 @@
 import {
-  StyleSheet,
+  TouchableOpacity,
   View,
   Text,
   Alert,
   ScrollView,
   ActivityIndicator,
 } from "react-native";
-import { useEffect, useContext, useState } from "react";
+import { useEffect, useState, useLayoutEffect, useContext } from "react";
 import axios from "axios";
-import { api_url } from "../constantes";
+import { MaterialIcons } from "@expo/vector-icons";
 import { Input, PrimaryButton } from "../components";
-export function Perfil() {
+import { AuthContext } from "../context";
+export function Perfil({ navigation }) {
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity>
+          <Text style={{ color: "#0984e3" }}>Actualizar</Text>
+        </TouchableOpacity>
+      ),
+    });
+  }, []);
+
+  // funcion inicial
   useEffect(() => {
     getUserInfo();
   }, []);
+
+  // variables
   const [cargando, setCargando] = useState(true);
   const [usuario, setUsuario] = useState({});
+  const [collapsed, setCollapsed] = useState(true);
+  const { checkAuth } = useContext(AuthContext);
+
+  // funciones
   async function getUserInfo() {
-    const { data } = await axios.get(api_url + "/auth/me");
+    const { data } = await axios.get("/auth/me");
     console.log(data);
     setCargando(false);
-    if (data.error) {
-      Alert.alert("Ferreteria Movil", data.error);
-      return;
-    }
+
     if (!data.usuario) {
-      Alert.alert(
-        "Ferreteria Movil",
-        "Ups ha habido un error al solicitar los datos"
-      );
+      checkAuth();
       return;
     }
     setUsuario(data.usuario);
   }
+  // renderizar
   if (cargando) {
     return (
       <View
@@ -60,31 +73,42 @@ export function Perfil() {
         <Text>Correo: </Text>
         <Input value={usuario.correo} />
       </View>
-      <View>
-        <Text>Dirección: </Text>
-        <Input />
-      </View>
-      <View>
-        <Text>Bloque:</Text>
-        <Input />
-      </View>
-      <View>
-        <Text>Ciudad:</Text>
 
-        <Input />
-      </View>
-      <View>
-        <Text>País:</Text>
-        <Input />
-      </View>
       <View>
         <Text>Número de telefono: </Text>
-        <Input />
+        <Input keyboardType="numeric" />
       </View>
-
-      <PrimaryButton style={{ marginBottom: 50 }}>Actualizar</PrimaryButton>
+      <TouchableOpacity
+        style={{
+          flexDirection: "row",
+        }}
+        onPress={() => setCollapsed(!collapsed)}
+      >
+        <Text>Direccion</Text>
+        <MaterialIcons name="arrow-drop-down" size={24} color="black" />
+      </TouchableOpacity>
+      {collapsed ? (
+        <></>
+      ) : (
+        <>
+          <View>
+            <Text>Ciudad:</Text>
+            <Input />
+          </View>
+          <View>
+            <Text>Colonia:</Text>
+            <Input />
+          </View>
+          <View>
+            <Text>Bloque:</Text>
+            <Input />
+          </View>
+          <View>
+            <Text>Detalles: </Text>
+            <Input />
+          </View>
+        </>
+      )}
     </ScrollView>
   );
 }
-
-StyleSheet;

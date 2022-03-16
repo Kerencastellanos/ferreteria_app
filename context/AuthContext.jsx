@@ -12,6 +12,7 @@ export const AuthContext = createContext({
   gotoLogin: false,
   setUser(user) {},
   user: { name: "", email: "", imageUrl: "" },
+  checkAuth() {},
 });
 
 export function AuthProvider({ children }) {
@@ -94,6 +95,7 @@ export function AuthProvider({ children }) {
         rToken,
         setAToken,
         setRToken,
+        checkAuth,
       }}
     >
       {children}
