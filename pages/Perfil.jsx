@@ -1,8 +1,8 @@
 import {
   TouchableOpacity,
   View,
+  Dimensions,
   Text,
-  Alert,
   ScrollView,
   ActivityIndicator,
 } from "react-native";
@@ -12,13 +12,25 @@ import {
   useState,
   useLayoutEffect,
   useContext,
+  useRef,
 } from "react";
 import axios from "axios";
 import { MaterialIcons } from "@expo/vector-icons";
-import { Input, PrimaryButton } from "../components";
+import { Input } from "../components";
 import { AuthContext } from "../context";
 import { compareObjs } from "../constantes";
+
+import MapView, { Marker } from "react-native-maps";
+import { Entypo } from "@expo/vector-icons";
+import {
+  getCurrentPositionAsync,
+  requestForegroundPermissionsAsync,
+} from "expo-location";
+
+const { width } = Dimensions.get("window");
+
 export function Perfil({ navigation }) {
+  // variables
   const [usuario, setUsuario] = useReducer(
     (preUsuario, newProp) => {
       return { ...preUsuario, ...newProp };
@@ -34,7 +46,22 @@ export function Perfil({ navigation }) {
       direccion: "",
     }
   );
+  const [cargando, setCargando] = useState(true);
+  const [usuarioCopy, setUsuarioCopy] = useState({});
+  const [ubicacion, setUbicacion] = useState({ latitude: 0, longitude: 0 });
+  const [collapsed, setCollapsed] = useState(true);
+  const { checkAuth } = useContext(AuthContext);
+  const mapaRef = useRef();
 
+  // funciones
+
+  // funcion inicial
+  useEffect(() => {
+    getUserInfo();
+    obtenerUbicacion();
+  }, []);
+
+  // mostar boton de actualizar usuario
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () =>
@@ -52,19 +79,18 @@ export function Perfil({ navigation }) {
     });
   }, [usuario]);
 
-  // funcion inicial
+  // navegar a la ubicacion del usuario
   useEffect(() => {
-    getUserInfo();
-  }, []);
+    // latitudeDelta y longitudeDelta representan
+    // el zoom en el mapa
+    if (mapaRef.current) {
+      mapaRef.current.animateToRegion(
+        { ...ubicacion, latitudeDelta: 0.05, longitudeDelta: 0.05 },
+        2000
+      );
+    }
+  }, [ubicacion]);
 
-  // variables
-  const [cargando, setCargando] = useState(true);
-  const [usuarioCopy, setUsuarioCopy] = useState({});
-
-  const [collapsed, setCollapsed] = useState(true);
-  const { checkAuth } = useContext(AuthContext);
-
-  // funciones
   async function getUserInfo() {
     const { data } = await axios.get("/usuarios/me");
     console.log(data);
@@ -77,6 +103,17 @@ export function Perfil({ navigation }) {
     setUsuarioCopy(data.usuario);
     setUsuario(data.usuario);
   }
+
+  async function obtenerUbicacion() {
+    let res = await requestForegroundPermissionsAsync();
+    console.log(res);
+    if (res.granted) {
+      const { coords } = await getCurrentPositionAsync();
+      setUbicacion(coords);
+      return;
+    }
+  }
+
   // renderizar
   if (cargando) {
     return (
@@ -120,6 +157,7 @@ export function Perfil({ navigation }) {
           onChangeText={(telefono) => setUsuario({ telefono })}
         />
       </View>
+
       <TouchableOpacity
         style={{
           flexDirection: "row",
@@ -129,6 +167,7 @@ export function Perfil({ navigation }) {
         <Text>Direccion</Text>
         <MaterialIcons name="arrow-drop-down" size={24} color="black" />
       </TouchableOpacity>
+
       {collapsed ? (
         <></>
       ) : (
@@ -163,6 +202,16 @@ export function Perfil({ navigation }) {
           </View>
         </>
       )}
+      <MapView
+        showsUserLocation={true}
+        showsMyLocationButton={true}
+        ref={mapaRef}
+        style={{ width, height: width }}
+      >
+        <Marker coordinate={ubicacion} title="Mi Ubicacion">
+          <Entypo name="home" size={24} color="#00a8ff" />
+        </Marker>
+      </MapView>
     </ScrollView>
   );
 }
