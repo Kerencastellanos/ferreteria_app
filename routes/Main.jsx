@@ -9,6 +9,7 @@ import {
   Registro,
   Perfil,
   RecuperarClave,
+  HistorialCompras,
 } from "../pages";
 import { Home } from "./Home";
 
@@ -33,6 +34,7 @@ export function Main() {
       {isAuth ? (
         <Stack.Group>
           <Stack.Screen name="Perfil" component={Perfil} />
+          <Stack.Screen name="Historial" component={HistorialCompras} />
         </Stack.Group>
       ) : (
         <Stack.Group>

@@ -8,7 +8,12 @@ import { Logo } from "./Logo";
 import { AuthContext } from "../context";
 import { useContext } from "react";
 import { useNavigation } from "@react-navigation/native";
-import { LoginIcon, LogoutIcon, PerfilIcon } from "./DrawerIcons";
+import {
+  HistorialIcon,
+  LoginIcon,
+  LogoutIcon,
+  PerfilIcon,
+} from "./DrawerIcons";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -41,6 +46,11 @@ export function CustomDrawer(props) {
             label={"Perfil"}
             onPress={navegar("Perfil")}
             icon={PerfilIcon}
+          />
+          <DrawerItem
+            label={"Historial Compras"}
+            onPress={navegar("Historial")}
+            icon={HistorialIcon}
           />
           <DrawerItem
             label={"Cerrar Session"}

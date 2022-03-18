@@ -20,3 +20,7 @@ export function LoginIcon({ color = "", size = 24 }) {
 export function LogoutIcon({ color = "", size = 24 }) {
   return <SimpleLineIcons name="logout" size={size} color={color} />;
 }
+
+export function HistorialIcon({ color = "", size = 24 }) {
+  return <SimpleLineIcons name="handbag" size={size} color={color} />;
+}
