@@ -1,6 +1,7 @@
 import {
   TouchableOpacity,
   View,
+  Alert,
   Dimensions,
   Text,
   ScrollView,
@@ -66,11 +67,7 @@ export function Perfil({ navigation }) {
     navigation.setOptions({
       headerRight: () =>
         !compareObjs(usuario, usuarioCopy) ? (
-          <TouchableOpacity
-            onPress={() => {
-              console.log(usuario);
-            }}
-          >
+          <TouchableOpacity onPress={actualizarUsuario}>
             <Text style={{ color: "#0984e3" }}>Actualizar</Text>
           </TouchableOpacity>
         ) : (
@@ -91,6 +88,7 @@ export function Perfil({ navigation }) {
     }
   }, [ubicacion]);
 
+  // funciones
   async function getUserInfo() {
     const { data } = await axios.get("/usuarios/me");
     console.log(data);
@@ -104,6 +102,13 @@ export function Perfil({ navigation }) {
     setUsuario(data.usuario);
   }
 
+  async function actualizarUsuario() {
+    const { data } = await axios.put("/usuarios", usuario);
+    console.log(data);
+    setUsuarioCopy(usuario);
+    setUsuario(usuario);
+    Alert.alert("Ferreteria Movil", "Usuario actualizado");
+  }
   async function obtenerUbicacion() {
     let res = await requestForegroundPermissionsAsync();
     console.log(res);
