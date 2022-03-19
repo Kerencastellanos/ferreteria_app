@@ -17,6 +17,7 @@ export function Productos() {
       setProductos(data);
       setMsg("");
     } catch (error) {
+      console.log(error);
       setMsg(error.message);
     }
     setCargando(false);

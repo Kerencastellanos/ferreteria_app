@@ -12,15 +12,32 @@ import { AntDesign } from "@expo/vector-icons";
 
 import { useState, useContext } from "react";
 import { CartContext } from "../context";
-export function Producto({ cart = false, mini = false, producto }) {
+/**
+ * @typedef {{id:number, cantidad:number, nombre:string, descripcion?:string, stock?:number, precio:number, imagenes?:Imagen[],fecha?:string}} IProducto
+ * @typedef {{url:string}} Imagen
+ * @typedef {{enabled?:boolean,cart:boolean,mini:boolean,producto:IProducto}} Props
+ */
+
+/**
+ *
+ * @param {Props} props
+ *
+ */
+
+export function Producto({
+  enabled = true,
+  cart = false,
+  mini = false,
+  producto,
+}) {
   const { setCart } = useContext(CartContext);
   const navigation = useNavigation();
-  const { id, cantidad, nombre, descripcion, stock, precio, imagenes } =
+  const { id, cantidad, nombre, descripcion, stock, precio, imagenes, fecha } =
     producto;
   function verProducto() {
     navigation.navigate("Producto", producto);
   }
-  const [cant, setCant] = useState(() => String(cantidad) || 1);
+  const [cant, setCant] = useState(() => String(cantidad || 1));
   function removerDecart() {
     Alert.alert("Ferreteria Movil", "Eliminar?", [
       { text: "No" },
@@ -36,7 +53,7 @@ export function Producto({ cart = false, mini = false, producto }) {
     return (
       <View style={[styles.container, mini ? { flexDirection: "column" } : {}]}>
         <TouchableOpacity onPress={verProducto}>
-          {imagenes.length ? (
+          {imagenes ? (
             <Image
               source={{
                 uri: imagenes[0].url,
@@ -60,11 +77,17 @@ export function Producto({ cart = false, mini = false, producto }) {
                 keyboardType="numeric"
                 placeholder="Cantidad"
                 value={cant}
+                editable={enabled}
                 onChangeText={setCant}
               />
-              <TouchableOpacity onPress={removerDecart}>
-                <AntDesign name="closecircleo" size={24} color="gray" />
-              </TouchableOpacity>
+
+              {enabled ? (
+                <TouchableOpacity onPress={removerDecart}>
+                  <AntDesign name="closecircleo" size={24} color="gray" />
+                </TouchableOpacity>
+              ) : (
+                <Text>{new Date(fecha).toLocaleDateString()}</Text>
+              )}
             </View>
           </View>
         ) : (

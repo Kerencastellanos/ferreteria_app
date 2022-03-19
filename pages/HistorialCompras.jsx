@@ -1,7 +1,10 @@
+//@ts-check
+
 /**
- * @typedef {{ detalles:Detalle[] }} Venta
+ * @typedef {import("../components/Producto").IProducto} IProducto
+ * @typedef {{ detalles:Detalle[],fecha:string }} Venta
  * @typedef {{ cantidad:number,precio:number,producto:Producto }} Detalle
- * @typedef {{ imagenes:Imagen[],nombre:string }} Producto
+ * @typedef {{ id:number,imagenes:Imagen[],nombre:string }} Producto
  * @typedef {{ url:string }} Imagen
  * @typedef {{ data:{ventas:Venta[]} }} Res
  */
@@ -13,9 +16,12 @@ import { ListaProductos } from "../components";
 
 export function HistorialCompras() {
   /**
-   * @type [ventas:Venta[]]
+   * @type [ventas:Venta[],setVentas:Function]
    */
   const [ventas, setVentas] = useState([]);
+  /**
+   * @type [prods:IProducto[],setProds:(prods:IProducto[] | ((prods:IProducto[])=>IProducto[]))=>void]
+   */
   const [prods, setProds] = useState([]);
   useEffect(() => {
     (async () => {
@@ -24,20 +30,31 @@ export function HistorialCompras() {
        */
       let { data } = await axios.get("/ventas");
       setVentas(data.ventas);
-      setProds(
-        data.ventas.map((v, i) => ({
-          cantidad: v.detalles[i].cantidad,
-          images: v.image,
-        }))
-      );
+      setProds([]);
+      data.ventas.forEach((v) => {
+        let detalles = v.detalles.map((d) => ({
+          id: d.producto.id,
+          cantidad: d.cantidad,
+          imagenes: d.producto.imagenes,
+          precio: d.precio,
+          nombre: d.producto.nombre,
+          fecha: v.fecha,
+        }));
+        setProds((prev) => prev.concat(detalles));
+      });
+
       console.log("historial: ", data.ventas);
     })();
   }, []);
 
+  useEffect(() => {
+    console.log("prods:");
+    console.log(prods);
+  }, [prods]);
+
   return (
     <View style={styles.container}>
-      <Text>HistorialCompras</Text>
-      <ListaProductos cart={true} prods={prods} />
+      <ListaProductos cart={true} prods={prods} enabled={false} />
     </View>
   );
 }
