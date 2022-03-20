@@ -45,6 +45,8 @@ export function Perfil({ navigation }) {
       ciudad: "",
       colonia: "",
       direccion: "",
+      latitude: 0,
+      longitude: 0,
     }
   );
   const [cargando, setCargando] = useState(true);
@@ -59,7 +61,6 @@ export function Perfil({ navigation }) {
   // funcion inicial
   useEffect(() => {
     getUserInfo();
-    obtenerUbicacion();
   }, []);
 
   // mostar boton de actualizar usuario
@@ -74,7 +75,19 @@ export function Perfil({ navigation }) {
           <></>
         ),
     });
-  }, [usuario]);
+    if (ubicacion.latitude) {
+      return;
+    }
+    if (usuario.latitude && usuario.longitude) {
+      setUbicacion({
+        latitude: usuario.latitude,
+        longitude: usuario.longitude,
+      });
+      actualizarUsuario({ quiet: true });
+      return;
+    }
+    obtenerUbicacion();
+  }, [usuario, ubicacion]);
 
   // navegar a la ubicacion del usuario
   useEffect(() => {
@@ -102,19 +115,29 @@ export function Perfil({ navigation }) {
     setUsuario(data.usuario);
   }
 
-  async function actualizarUsuario() {
+  async function actualizarUsuario({ quiet = false }) {
+    console.log("actualizarUsuario");
+    console.log("send:", usuario);
     const { data } = await axios.put("/usuarios", usuario);
-    console.log(data);
+    console.log("recieved:", data);
     setUsuarioCopy(usuario);
     setUsuario(usuario);
-    Alert.alert("Ferreteria Movil", "Usuario actualizado");
+    console.log("Usuario actualizado");
+    if (!quiet) {
+      Alert.alert("Ferreteria Movil", "Usuario actualizado");
+    }
   }
   async function obtenerUbicacion() {
     let res = await requestForegroundPermissionsAsync();
     console.log(res);
     if (res.granted) {
       const { coords } = await getCurrentPositionAsync();
-      setUbicacion(coords);
+      setUsuario({ latitude: coords.latitude, longitude: coords.longitude });
+      setUsuarioCopy({
+        ...usuarioCopy,
+        latitude: coords.latitude,
+        longitude: coords.longitude,
+      });
       return;
     }
   }
