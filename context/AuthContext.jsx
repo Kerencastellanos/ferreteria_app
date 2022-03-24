@@ -38,14 +38,26 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     axios.interceptors.response.use((res) => {
       if (res.data.error && res.data.error.includes("jwt")) {
-        checkAuth();
+        refreshToken();
       }
       return res;
     });
 
     CheckTokens();
   }, []);
-
+  async function refreshToken() {
+    console.log("refresh Token");
+    const { data } = await axios.post("/auth/refresh", {
+      refreshToken: rToken,
+    });
+    console.log("data2: ", data);
+    if (data.accessToken) {
+      console.log("new AToken");
+      setAToken(data.accessToken);
+      return;
+    }
+    setGotoLogin(true);
+  }
   async function CheckTokens() {
     const a_Token = await AsyncStorage.getItem("aToken");
     const r_Token = await AsyncStorage.getItem("rToken");
@@ -71,17 +83,7 @@ export function AuthProvider({ children }) {
           setIsAuth(true);
           return;
         }
-        console.log("refresh Token");
-        const { data: data2 } = await axios.post("/auth/refresh", {
-          refreshToken: rToken,
-        });
-        console.log("data2: ", data2);
-        if (data2.accessToken) {
-          console.log("new AToken");
-          setAToken(data2.accessToken);
-          return;
-        }
-        setGotoLogin(true);
+        refreshToken();
       } catch (error) {
         console.warn(error);
       }

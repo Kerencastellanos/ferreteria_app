@@ -81,7 +81,9 @@ export function Perfil({ navigation }) {
         latitude: usuario.latitude,
         longitude: usuario.longitude,
       });
-      setImagen({ uri: usuario.imagenUrl });
+      if (usuario.imagenUrl) {
+        setImagen({ uri: usuario.imagenUrl });
+      }
       return;
     }
     obtenerUbicacion();
@@ -116,6 +118,7 @@ export function Perfil({ navigation }) {
   }
 
   async function actualizarUsuario({ quiet = false }) {
+    setCargando(true);
     const form = new FormData();
     /**
      * @type {string[]}
@@ -143,6 +146,7 @@ export function Perfil({ navigation }) {
         },
       });
       let data = await res.json();
+      setCargando(false);
       console.log(data);
       if (data.usuario) {
         setUsuarioCopy(usuario);
@@ -159,6 +163,7 @@ export function Perfil({ navigation }) {
       );
     } catch (error) {
       console.log(error);
+      setCargando(false);
     }
   }
   async function obtenerUbicacion() {
@@ -198,10 +203,20 @@ export function Perfil({ navigation }) {
     >
       <TouchableOpacity onPress={abrirGaleria}>
         {imagen ? (
-          <Image
-            source={{ uri: imagen.uri, width: 200, height: 200 }}
-            style={{ borderRadius: 100 }}
-          />
+          <View
+            style={{
+              borderRadius: 100,
+              borderColor: "#f3f3f3",
+              borderWidth: 1,
+            }}
+          >
+            <Image
+              source={{ uri: imagen.uri, width: 200, height: 200 }}
+              style={{
+                borderRadius: 100,
+              }}
+            />
+          </View>
         ) : (
           <MaterialIcons name="account-circle" size={200} color="#3495eb" />
         )}
