@@ -1,6 +1,7 @@
 import {
   TouchableOpacity,
   View,
+  Image,
   Alert,
   Dimensions,
   Text,
@@ -12,21 +13,19 @@ import {
   useEffect,
   useState,
   useLayoutEffect,
-  useContext,
   useRef,
 } from "react";
 import axios from "axios";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Input } from "../components";
-import { AuthContext } from "../context";
 import { compareObjs } from "../constantes";
-
 import MapView, { Marker } from "react-native-maps";
 import { Entypo } from "@expo/vector-icons";
 import {
   getCurrentPositionAsync,
   requestForegroundPermissionsAsync,
 } from "expo-location";
+import { launchImageLibraryAsync, MediaTypeOptions } from "expo-image-picker";
 
 const { width } = Dimensions.get("window");
 
@@ -53,9 +52,7 @@ export function Perfil({ navigation }) {
   const [usuarioCopy, setUsuarioCopy] = useState({});
   const [ubicacion, setUbicacion] = useState({ latitude: 0, longitude: 0 });
   const [collapsed, setCollapsed] = useState(true);
-  const { checkAuth } = useContext(AuthContext);
   const mapaRef = useRef();
-
   // funciones
 
   // funcion inicial
@@ -65,6 +62,7 @@ export function Perfil({ navigation }) {
 
   // mostar boton de actualizar usuario
   useLayoutEffect(() => {
+    if (cargando) return;
     navigation.setOptions({
       headerRight: () =>
         !compareObjs(usuario, usuarioCopy) ? (
@@ -75,7 +73,6 @@ export function Perfil({ navigation }) {
           <></>
         ),
     });
-    if (cargando) return;
     if (ubicacion.latitude) {
       return;
     }
@@ -84,7 +81,7 @@ export function Perfil({ navigation }) {
         latitude: usuario.latitude,
         longitude: usuario.longitude,
       });
-      actualizarUsuario({ quiet: true });
+      setImagen({ uri: usuario.imagenUrl });
       return;
     }
     obtenerUbicacion();
@@ -92,28 +89,76 @@ export function Perfil({ navigation }) {
 
   // funciones
   async function getUserInfo() {
-    const { data } = await axios.get("/usuarios/me");
-    console.log(data);
-    setCargando(false);
-
-    if (!data.usuario) {
-      checkAuth();
-      return;
+    try {
+      const { data } = await axios.get("/usuarios/me");
+      console.log(data);
+      setCargando(false);
+      setUsuarioCopy(data.usuario);
+      setUsuario(data.usuario);
+    } catch (error) {
+      console.log(error);
     }
-    setUsuarioCopy(data.usuario);
-    setUsuario(data.usuario);
+  }
+  const [imagen, setImagen] = useState();
+  async function abrirGaleria() {
+    const res = await launchImageLibraryAsync({
+      mediaTypes: MediaTypeOptions.Images,
+      allowsEditing: false,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!res.cancelled) {
+      setImagen(res);
+      console.log(res);
+      setUsuario({ imagenUrl: res.uri });
+    }
   }
 
   async function actualizarUsuario({ quiet = false }) {
-    console.log("actualizarUsuario");
-    console.log("send:", usuario);
-    const { data } = await axios.put("/usuarios", usuario);
-    console.log("recieved:", data);
-    setUsuarioCopy(usuario);
-    setUsuario(usuario);
-    console.log("Usuario actualizado");
-    if (!quiet) {
-      Alert.alert("Ferreteria Movil", "Usuario actualizado");
+    const form = new FormData();
+    /**
+     * @type {string[]}
+     */
+    let ext = imagen.uri.split(".");
+    ext = ext[ext.length - 1];
+    try {
+      form.append("perfil", {
+        filename: `perfil.${ext}`,
+        name: `perfil.${ext}`,
+        type: `${imagen.type}/${ext}`,
+        uri: imagen.uri,
+      });
+      Object.keys(usuario).forEach((k) => {
+        if (k != "imagenUrl") {
+          form.append(k, usuario[k]);
+        }
+      });
+      const res = await fetch(axios.defaults.baseURL + "/usuarios", {
+        method: "PUT",
+        body: form,
+        headers: {
+          "Content-Type": "multipart/form-data",
+          ...axios.defaults.headers,
+        },
+      });
+      let data = await res.json();
+      console.log(data);
+      if (data.usuario) {
+        setUsuarioCopy(usuario);
+        setUsuario(usuario);
+        console.log("Usuario actualizado");
+        if (!quiet) {
+          Alert.alert("Ferreteria Movil", "Usuario actualizado");
+        }
+        return;
+      }
+      Alert.alert(
+        "Ferreteria Movil",
+        "No se pudo actualizar intente de nuevo "
+      );
+    } catch (error) {
+      console.log(error);
     }
   }
   async function obtenerUbicacion() {
@@ -151,6 +196,16 @@ export function Perfil({ navigation }) {
       style={{ padding: 10, backgroundColor: "white" }}
       contentContainerStyle={{ alignItems: "center" }}
     >
+      <TouchableOpacity onPress={abrirGaleria}>
+        {imagen ? (
+          <Image
+            source={{ uri: imagen.uri, width: 200, height: 200 }}
+            style={{ borderRadius: 100 }}
+          />
+        ) : (
+          <MaterialIcons name="account-circle" size={200} color="#3495eb" />
+        )}
+      </TouchableOpacity>
       <View>
         <Text>Nombre:</Text>
         <Input
