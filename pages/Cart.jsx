@@ -1,4 +1,11 @@
-import { StyleSheet, View, Text, Button, TouchableOpacity } from "react-native";
+import {
+  Alert,
+  StyleSheet,
+  View,
+  Text,
+  Button,
+  TouchableOpacity,
+} from "react-native";
 import { useContext } from "react";
 import { CartContext } from "../context";
 import { ListaProductos } from "../components";
@@ -21,6 +28,7 @@ export function Cart() {
       console.log(data);
       // limpiar el carrito
       if (data.venta) {
+        Alert.alert("Ferreteria Movil", "Venta realizado con exito");
         setCart([]);
       }
     } catch (error) {

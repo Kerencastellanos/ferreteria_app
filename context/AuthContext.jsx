@@ -36,6 +36,15 @@ export function AuthProvider({ children }) {
   }
 
   useEffect(() => {
+    axios.interceptors.response.use(
+      (res) => {
+        return res;
+      },
+      (error) => {
+        checkAuth();
+        return Promise.reject(error);
+      }
+    );
     CheckTokens();
   }, []);
 

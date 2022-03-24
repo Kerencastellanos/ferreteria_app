@@ -9,12 +9,13 @@
  * @typedef {{ data:{ventas:Venta[]} }} Res
  */
 
-import { FlatList, Text, StyleSheet, View } from "react-native";
+import { Text, StyleSheet, View } from "react-native";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { ListaProductos } from "../components";
 
 export function HistorialCompras() {
+  const [msg, setMsg] = useState("");
   /**
    * @type [ventas:Venta[],setVentas:Function]
    */
@@ -29,8 +30,14 @@ export function HistorialCompras() {
        * @type Res
        */
       let { data } = await axios.get("/ventas");
+      if (!data.ventas.length) {
+        setMsg("Aun no ha realizado compras");
+        return;
+      }
+      setMsg("");
       setVentas(data.ventas);
       setProds([]);
+
       data.ventas.forEach((v) => {
         let detalles = v.detalles.map((d) => ({
           id: d.producto.id,
@@ -51,7 +58,13 @@ export function HistorialCompras() {
     console.log("prods:");
     console.log(prods);
   }, [prods]);
-
+  if (msg) {
+    return (
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <Text>{msg}</Text>
+      </View>
+    );
+  }
   return (
     <View style={styles.container}>
       <ListaProductos cart={true} prods={prods} enabled={false} />

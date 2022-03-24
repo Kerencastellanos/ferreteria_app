@@ -75,6 +75,7 @@ export function Perfil({ navigation }) {
           <></>
         ),
     });
+    if (cargando) return;
     if (ubicacion.latitude) {
       return;
     }
@@ -88,18 +89,6 @@ export function Perfil({ navigation }) {
     }
     obtenerUbicacion();
   }, [usuario, ubicacion]);
-
-  // navegar a la ubicacion del usuario
-  useEffect(() => {
-    // latitudeDelta y longitudeDelta representan
-    // el zoom en el mapa
-    if (mapaRef.current) {
-      mapaRef.current.animateToRegion(
-        { ...ubicacion, latitudeDelta: 0.05, longitudeDelta: 0.05 },
-        2000
-      );
-    }
-  }, [ubicacion]);
 
   // funciones
   async function getUserInfo() {
@@ -231,6 +220,13 @@ export function Perfil({ navigation }) {
         </>
       )}
       <MapView
+        initialRegion={
+          ubicacion && {
+            ...ubicacion,
+            latitudeDelta: 0.05,
+            longitudeDelta: 0.05,
+          }
+        }
         showsUserLocation={true}
         showsMyLocationButton={true}
         ref={mapaRef}
