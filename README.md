@@ -1,7 +1,7 @@
 
 # ferreteria_app
 
-## CRedenciales
+## Credenciales
 
 > correo: cflores@unicah.edu
 > clave: programovil 
