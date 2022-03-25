@@ -12,9 +12,9 @@
     ],
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/helmet.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/helmet.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -27,7 +27,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/helmet.png",
         "backgroundColor": "#FFFFFF"
       }
     },
