@@ -36,6 +36,10 @@ export function AuthProvider({ children }) {
   }
 
   useEffect(() => {
+    axios.interceptors.request.use(async (req) => {
+      await checkAuth();
+      return req;
+    });
     CheckTokens();
   }, []);
   async function refreshToken() {
@@ -61,7 +65,6 @@ export function AuthProvider({ children }) {
       setRToken(r_Token);
     }
   }
-  const [timeOutId, setTimeOutId] = useState();
   async function checkAuth() {
     console.log("rToken: ", rToken);
     if (rToken) {
@@ -74,13 +77,7 @@ export function AuthProvider({ children }) {
           console.log("auth true");
           setUser(data.usuario);
           setIsAuth(true);
-          if (timeOutId) {
-            clearTimeout(timeOutId);
-          }
-          let timeOut = setTimeout(() => {
-            refreshToken();
-          }, 1000 * 60 * 19); // en 19 minutos solicitar un nuevo token
-          setTimeOutId(timeOut);
+
           return;
         }
         refreshToken();
