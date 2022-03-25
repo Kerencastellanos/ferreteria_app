@@ -14,6 +14,7 @@ import {
   useState,
   useLayoutEffect,
   useRef,
+  useContext,
 } from "react";
 import axios from "axios";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -26,11 +27,13 @@ import {
   requestForegroundPermissionsAsync,
 } from "expo-location";
 import { launchImageLibraryAsync, MediaTypeOptions } from "expo-image-picker";
+import { AuthContext } from "../context";
 
 const { width } = Dimensions.get("window");
 
 export function Perfil({ navigation }) {
   // variables
+  const { checkAuth } = useContext(AuthContext);
   const [usuario, setUsuario] = useReducer(
     (preUsuario, newProp) => {
       return { ...preUsuario, ...newProp };
@@ -95,6 +98,11 @@ export function Perfil({ navigation }) {
       const { data } = await axios.get("/usuarios/me");
       console.log(data);
       setCargando(false);
+      if (!data.usuario) {
+        await checkAuth();
+        getUserInfo();
+        return;
+      }
       setUsuarioCopy(data.usuario);
       setUsuario(data.usuario);
     } catch (error) {
@@ -148,14 +156,16 @@ export function Perfil({ navigation }) {
       let data = await res.json();
       setCargando(false);
       console.log(data);
-      if (data.usuario) {
-        setUsuarioCopy(usuario);
-        setUsuario(usuario);
-        console.log("Usuario actualizado");
-        if (!quiet) {
-          Alert.alert("Ferreteria Movil", "Usuario actualizado");
-        }
+      if (!data.usuario) {
+        await checkAuth();
+        actualizarUsuario();
         return;
+      }
+      setUsuarioCopy(usuario);
+      setUsuario(usuario);
+      console.log("Usuario actualizado");
+      if (!quiet) {
+        Alert.alert("Ferreteria Movil", "Usuario actualizado");
       }
       Alert.alert(
         "Ferreteria Movil",

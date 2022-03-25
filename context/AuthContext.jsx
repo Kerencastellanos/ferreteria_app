@@ -12,7 +12,7 @@ export const AuthContext = createContext({
   gotoLogin: false,
   setUser(user) {},
   user: { name: "", email: "", imageUrl: "" },
-  checkAuth() {},
+  async checkAuth() {},
 });
 
 export function AuthProvider({ children }) {
@@ -36,10 +36,6 @@ export function AuthProvider({ children }) {
   }
 
   useEffect(() => {
-    axios.interceptors.request.use(async (req) => {
-      await checkAuth();
-      return req;
-    });
     CheckTokens();
   }, []);
   async function refreshToken() {
@@ -86,6 +82,7 @@ export function AuthProvider({ children }) {
       }
       return;
     }
+    console.log("auth false");
     setIsAuth(false);
   }
 
