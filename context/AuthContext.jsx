@@ -13,6 +13,7 @@ export const AuthContext = createContext({
   setUser(user) {},
   user: { name: "", email: "", imageUrl: "" },
   async checkAuth() {},
+  async refreshToken() {},
 });
 
 export function AuthProvider({ children }) {
@@ -21,13 +22,39 @@ export function AuthProvider({ children }) {
   const [aToken, setAToken] = useState("");
   const [rToken, setRToken] = useState("");
   const [isAuth, setIsAuth] = useState(false);
+
   useEffect(() => {
     axios.defaults.headers = {
       Authentication: aToken,
     };
-    checkAuth();
+  }, [aToken]);
+
+  useEffect(() => {
     saveTokens();
   }, [aToken, rToken]);
+
+  useEffect(() => {
+    if (rToken) {
+      axios.interceptors.response.use(async (res) => {
+        if (res.data.error && res.data.error.includes("jwt")) {
+          console.log("interceptors ");
+          console.log(res.data.error);
+          console.log("rToken:", rToken);
+          await refreshToken();
+          console.log(res.config.data);
+          return await axios.request({
+            ...res.config,
+            headers: {
+              Authentication: aToken,
+            },
+          });
+        }
+        return res;
+      });
+    }
+    checkAuth();
+  }, [rToken]);
+
   async function saveTokens() {
     if (aToken && rToken) {
       AsyncStorage.setItem("aToken", aToken);
@@ -38,8 +65,13 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     CheckTokens();
   }, []);
+
   async function refreshToken() {
-    console.log("refresh Token");
+    if (!rToken) {
+      console.log("No hay rToken");
+      return;
+    }
+    console.log("refresh Token ", rToken);
     const { data } = await axios.post("/auth/refresh", {
       refreshToken: rToken,
     });
@@ -62,13 +94,13 @@ export function AuthProvider({ children }) {
     }
   }
   async function checkAuth() {
-    console.log("rToken: ", rToken);
+    console.log("checkAuth-rToken: ", rToken);
     if (rToken) {
       console.log("checkAuth");
       try {
         const { data } = await axios.get("/usuarios/me");
 
-        console.log("data: ", data);
+        console.log("checkAuth-data: ", data);
         if (data.usuario) {
           console.log("auth true");
           setUser(data.usuario);
@@ -76,7 +108,6 @@ export function AuthProvider({ children }) {
 
           return;
         }
-        refreshToken();
       } catch (error) {
         console.warn(error);
       }
@@ -99,6 +130,7 @@ export function AuthProvider({ children }) {
         setAToken,
         setRToken,
         checkAuth,
+        refreshToken,
       }}
     >
       {children}

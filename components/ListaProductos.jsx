@@ -8,7 +8,7 @@ import { Producto } from "./Producto";
  * @typedef {import("./Producto").IProducto} Producto
  */
 /**
- * @typedef {{enabled?:boolean,cart?:boolean,prods:Producto[],horizontal?:boolean }} Props
+ * @typedef {{enabled?:boolean,cart?:boolean,prods:Producto[],horizontal?:boolean,cargando:boolean,onRefresh:()=>Promise<void> }} Props
  */
 
 /**
@@ -20,9 +20,13 @@ export function ListaProductos({
   enabled = true,
   prods = [],
   horizontal = false,
+  cargando = false,
+  onRefresh,
 }) {
   return (
     <FlatList
+      refreshing={cargando}
+      onRefresh={onRefresh}
       horizontal={horizontal}
       data={prods}
       keyExtractor={() => uuid()}

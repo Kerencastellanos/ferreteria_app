@@ -13,6 +13,7 @@ export function Productos() {
   }, []);
   async function SolicitarProds() {
     try {
+      setCargando(true);
       const { data } = await axios.get("/productos");
       setProductos(data);
       setMsg("");
@@ -39,14 +40,6 @@ export function Productos() {
     setCargando(false);
   }
 
-  if (cargando) {
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color={"#0000ff"} />
-      </View>
-    );
-  }
-
   return (
     <View style={styles.container}>
       <Buscador
@@ -58,7 +51,11 @@ export function Productos() {
       {msg ? (
         <Text style={{ textAlign: "center" }}>{msg}</Text>
       ) : (
-        <ListaProductos prods={productos} />
+        <ListaProductos
+          cargando={cargando}
+          onRefresh={SolicitarProds}
+          prods={productos}
+        />
       )}
     </View>
   );

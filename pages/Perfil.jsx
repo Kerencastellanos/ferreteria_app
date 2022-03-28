@@ -33,7 +33,7 @@ const { width } = Dimensions.get("window");
 
 export function Perfil({ navigation }) {
   // variables
-  const { checkAuth } = useContext(AuthContext);
+  const { refreshToken } = useContext(AuthContext);
   const [usuario, setUsuario] = useReducer(
     (preUsuario, newProp) => {
       return { ...preUsuario, ...newProp };
@@ -98,11 +98,7 @@ export function Perfil({ navigation }) {
       const { data } = await axios.get("/usuarios/me");
       console.log(data);
       setCargando(false);
-      if (!data.usuario) {
-        await checkAuth();
-        getUserInfo();
-        return;
-      }
+
       setUsuarioCopy(data.usuario);
       setUsuario(data.usuario);
     } catch (error) {
@@ -131,15 +127,17 @@ export function Perfil({ navigation }) {
     /**
      * @type {string[]}
      */
-    let ext = imagen.uri.split(".");
-    ext = ext[ext.length - 1];
-    try {
+    if (imagen) {
+      let ext = imagen.uri.split(".");
+      ext = ext[ext.length - 1];
       form.append("perfil", {
         filename: `perfil.${ext}`,
         name: `perfil.${ext}`,
         type: `${imagen.type}/${ext}`,
         uri: imagen.uri,
       });
+    }
+    try {
       Object.keys(usuario).forEach((k) => {
         if (k != "imagenUrl") {
           form.append(k, usuario[k]);
