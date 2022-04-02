@@ -15,7 +15,7 @@ export function Registro({ navigation }) {
   function irALogin() {
     navigation.navigate("Login");
   }
-  const { setAToken, setRToken } = useContext(AuthContext);
+  const { setAuth } = useContext(AuthContext);
   const [nombre, setNombre] = useState("");
   const [correo, setCorreo] = useState("");
   const [clave, setClave] = useState("");
@@ -38,8 +38,7 @@ export function Registro({ navigation }) {
         );
         return;
       }
-      setAToken(data.accessToken);
-      setRToken(data.refreshToken);
+      setAuth({ aToken: data.accessToken, rToken: data.refreshToken });
 
       navigation.navigate("Cart");
     } catch (error) {

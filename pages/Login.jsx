@@ -6,7 +6,7 @@ import { AuthContext } from "../context";
 import { Input } from "../components";
 
 export function Login({ navigation, route }) {
-  const { setAToken, setRToken } = useContext(AuthContext);
+  const { setAuth } = useContext(AuthContext);
 
   async function enviarDatos() {
     const { data } = await axios.post("/auth/login", {
@@ -21,8 +21,7 @@ export function Login({ navigation, route }) {
       alert("Habido un error vuelva a intentar");
       return;
     }
-    setAToken(data.accessToken);
-    setRToken(data.refreshToken);
+    setAuth({ aToken: data.accessToken, rToken: data.refreshToken });
     navigation.navigate("Cart");
   }
   const [correo, setCorreo] = useState(route.params || "");

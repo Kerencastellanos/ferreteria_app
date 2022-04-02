@@ -18,15 +18,13 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export function CustomDrawer(props) {
-  const { isAuth, setRToken, setAToken } = useContext(AuthContext);
+  const { isAuth, setAuth } = useContext(AuthContext);
   const { navigate } = useNavigation();
   async function cerrarSession() {
     const { data } = await axios.delete("/auth/logout");
     Alert.alert("Ferreteria Movil", data.error || data.msg);
-    await AsyncStorage.removeItem("aToken");
     await AsyncStorage.removeItem("rToken");
-    setRToken("");
-    setAToken("");
+    setAuth({ rToken: "", aToken: "" });
   }
   function navegar(screen = "") {
     return (e) => {
