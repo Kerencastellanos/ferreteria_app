@@ -14,7 +14,7 @@ import { useState, useContext } from "react";
 import { CartContext } from "../context";
 /**
  * @typedef {{id:number, cantidad:number, nombre:string, descripcion?:string, stock?:number, precio:number, imagenes?:Imagen[],fecha?:string}} IProducto
- * @typedef {{url:string}} Imagen
+ * @typedef {{imagenUrl:string}} Imagen
  * @typedef {{enabled?:boolean,cart:boolean,mini:boolean,producto:IProducto}} Props
  */
 
@@ -56,7 +56,7 @@ export function Producto({
           {imagenes ? (
             <Image
               source={{
-                uri: imagenes[0].url,
+                uri: imagenes[0].imagenUrl,
               }}
               style={styles.img}
             />
@@ -104,7 +104,7 @@ export function Producto({
       {imagenes.length ? (
         <Image
           source={{
-            uri: imagenes[0].url,
+            uri: imagenes[0].imagenUrl,
           }}
           style={styles.img}
         />

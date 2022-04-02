@@ -48,7 +48,7 @@ export function Cart() {
     <View style={styles.container}>
       <Button title="Borrar Todo" onPress={borratTodo} color={"#ff5e5e"} />
 
-      <ListaProductos cart={true} prods={cart} />
+      <ListaProductos cart prods={cart} />
       <TouchableOpacity
         onPress={enviarCompra}
         style={{ backgroundColor: "#3b82f6", padding: 15 }}

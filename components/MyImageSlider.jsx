@@ -20,10 +20,10 @@ export function MyImageSlider({ images = [{ url: "" }] }) {
         onScroll={({}) => {}}
         showsHorizontalScrollIndicator={false}
         keyExtractor={(_, i) => i.toString()}
-        renderItem={({ item: { url } }) => (
+        renderItem={({ item: { imagenUrl } }) => (
           <Image
             style={{ width: size.width, height: size.width }}
-            source={{ uri: url }}
+            source={{ uri: imagenUrl }}
           />
         )}
       />

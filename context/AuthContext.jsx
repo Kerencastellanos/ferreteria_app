@@ -1,7 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { createContext, useEffect, useState } from "react";
-
 export const AuthContext = createContext({
   isAuth: false,
   setIsAuth(isAuth = true) {},
@@ -40,13 +39,14 @@ export function AuthProvider({ children }) {
           console.log("interceptors ");
           console.log(res.data.error);
           console.log("rToken:", rToken);
-          await refreshToken();
+          const atoken = await refreshToken();
+          if (!atoken) {
+            return res;
+          }
           console.log(res.config.data);
           return await axios.request({
             ...res.config,
-            headers: {
-              Authentication: aToken,
-            },
+            headers: { Authentication: atoken },
           });
         }
         return res;
@@ -79,7 +79,7 @@ export function AuthProvider({ children }) {
     if (data.accessToken) {
       console.log("new AToken");
       setAToken(data.accessToken);
-      return;
+      return data.accessToken;
     }
     setGotoLogin(true);
   }
@@ -105,7 +105,6 @@ export function AuthProvider({ children }) {
           console.log("auth true");
           setUser(data.usuario);
           setIsAuth(true);
-
           return;
         }
       } catch (error) {

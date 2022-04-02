@@ -91,7 +91,7 @@ export function ProductoPage({ route, navigation }) {
 
   return (
     <ScrollView>
-      <MyImageSlider images={[...imagenes, ...imagenes, ...imagenes]} />
+      <MyImageSlider images={imagenes} />
       <View style={styles.info}>
         <Text style={styles.nombre}> {nombre}</Text>
         <Text> {descripcion}</Text>
