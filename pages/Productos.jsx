@@ -14,6 +14,13 @@ export function Productos() {
   useEffect(() => {
     SolicitarProds();
   }, []);
+
+  async function updateProds() {
+    setCargando(true);
+    const { data } = await axios.get("/productos");
+    setProductos(data);
+    setCargando(false);
+  }
   async function SolicitarProds() {
     if (maxReached) {
       return;
@@ -67,7 +74,8 @@ export function Productos() {
       ) : (
         <ListaProductos
           cargando={cargando}
-          onRefresh={SolicitarProds}
+          onRefresh={updateProds}
+          onEndReached={SolicitarProds}
           prods={productos}
         />
       )}

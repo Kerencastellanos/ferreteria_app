@@ -11,7 +11,7 @@ import { CartContext } from "../context";
 import { ListaProductos } from "../components";
 import axios from "axios";
 
-export function Cart() {
+export function Cart({ navigation }) {
   const { cart, setCart } = useContext(CartContext);
 
   function borratTodo() {
@@ -30,6 +30,7 @@ export function Cart() {
       if (data.venta) {
         Alert.alert("Ferreteria Movil", "Venta realizado con exito");
         setCart([]);
+        navigation.navigate("Historial");
       }
     } catch (error) {
       console.log(error);
@@ -38,9 +39,7 @@ export function Cart() {
   if (!cart.length) {
     return (
       <View style={styles.center}>
-        <Text style={{ textAlign: "center" }}>
-          Aun no tienes productos agregados
-        </Text>
+        <Text style={{ textAlign: "center" }}>Carrito vacio</Text>
       </View>
     );
   }

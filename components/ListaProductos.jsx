@@ -8,7 +8,7 @@ import { Producto } from "./Producto";
  * @typedef {import("./Producto").IProducto} Producto
  */
 /**
- * @typedef {{enabled?:boolean,cart?:boolean,prods:Producto[],horizontal?:boolean,cargando:boolean,onRefresh:()=>Promise<void> }} Props
+ * @typedef {{onEndReached?:()=>void,enabled?:boolean,cart?:boolean,prods:Producto[],horizontal?:boolean,cargando:boolean,onRefresh:()=>Promise<void> }} Props
  */
 
 /**
@@ -22,6 +22,7 @@ export function ListaProductos({
   horizontal = false,
   cargando = false,
   onRefresh,
+  onEndReached,
 }) {
   return (
     <FlatList
@@ -29,7 +30,7 @@ export function ListaProductos({
       onRefresh={onRefresh}
       horizontal={horizontal}
       data={prods}
-      onEndReached={onRefresh}
+      onEndReached={onEndReached}
       onEndReachedThreshold={0.1}
       ListFooterComponent={
         cargando ? <ActivityIndicator size={"large"} color={"blue"} /> : null

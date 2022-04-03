@@ -1,5 +1,3 @@
-//@ts-check
-
 /**
  * @typedef {import("../components/Producto").IProducto} IProducto
  * @typedef {{ detalles:Detalle[],fecha:string }} Venta
@@ -24,34 +22,36 @@ export function HistorialCompras() {
    * @type [prods:IProducto[],setProds:(prods:IProducto[] | ((prods:IProducto[])=>IProducto[]))=>void]
    */
   const [prods, setProds] = useState([]);
+  const [cargando, setCargando] = useState(false);
+  async function solicitarVentas() {
+    /**
+     * @type Res
+     */
+    let { data } = await axios.get("/ventas");
+    if (!data.ventas.length) {
+      setMsg("Aun no ha realizado compras");
+      return;
+    }
+    setMsg("");
+    setVentas(data.ventas);
+    setProds([]);
+
+    data.ventas.forEach((v) => {
+      let detalles = v.detalles.map((d) => ({
+        id: d.producto.id,
+        cantidad: d.cantidad,
+        imagenes: d.producto.imagenes,
+        precio: d.precio,
+        nombre: d.producto.nombre,
+        fecha: v.fecha,
+      }));
+      setProds((prev) => prev.concat(detalles));
+    });
+
+    console.log("historial: ", data.ventas);
+  }
   useEffect(() => {
-    (async () => {
-      /**
-       * @type Res
-       */
-      let { data } = await axios.get("/ventas");
-      if (!data.ventas.length) {
-        setMsg("Aun no ha realizado compras");
-        return;
-      }
-      setMsg("");
-      setVentas(data.ventas);
-      setProds([]);
-
-      data.ventas.forEach((v) => {
-        let detalles = v.detalles.map((d) => ({
-          id: d.producto.id,
-          cantidad: d.cantidad,
-          imagenes: d.producto.imagenes,
-          precio: d.precio,
-          nombre: d.producto.nombre,
-          fecha: v.fecha,
-        }));
-        setProds((prev) => prev.concat(detalles));
-      });
-
-      console.log("historial: ", data.ventas);
-    })();
+    solicitarVentas();
   }, []);
 
   useEffect(() => {
@@ -67,7 +67,13 @@ export function HistorialCompras() {
   }
   return (
     <View style={styles.container}>
-      <ListaProductos cart={true} prods={prods} enabled={false} />
+      <ListaProductos
+        cart={true}
+        prods={prods}
+        enabled={false}
+        cargando={cargando}
+        onRefresh={solicitarVentas}
+      />
     </View>
   );
 }
