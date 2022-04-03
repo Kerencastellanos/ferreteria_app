@@ -33,7 +33,7 @@ const { width } = Dimensions.get("window");
 
 export function Perfil({ navigation }) {
   // variables
-  const { refreshToken } = useContext(AuthContext);
+  const {} = useContext(AuthContext);
   const [usuario, setUsuario] = useReducer(
     (preUsuario, newProp) => {
       return { ...preUsuario, ...newProp };
@@ -143,6 +143,8 @@ export function Perfil({ navigation }) {
           form.append(k, usuario[k]);
         }
       });
+      // asegurarnos de tener un token
+      await axios.get("/usuarios/me");
       const res = await fetch(axios.defaults.baseURL + "/usuarios", {
         method: "PUT",
         body: form,
@@ -152,27 +154,18 @@ export function Perfil({ navigation }) {
         },
       });
       let data = await res.json();
-      setCargando(false);
       console.log(data);
-      if (!data.usuario) {
-        await checkAuth();
-        actualizarUsuario();
-        return;
-      }
+
       setUsuarioCopy(usuario);
       setUsuario(usuario);
       console.log("Usuario actualizado");
       if (!quiet) {
         Alert.alert("Ferreteria Movil", "Usuario actualizado");
       }
-      Alert.alert(
-        "Ferreteria Movil",
-        "No se pudo actualizar intente de nuevo "
-      );
     } catch (error) {
       console.log(error);
-      setCargando(false);
     }
+    setCargando(false);
   }
   async function obtenerUbicacion() {
     let res = await requestForegroundPermissionsAsync();
