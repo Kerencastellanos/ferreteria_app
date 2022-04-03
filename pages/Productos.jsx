@@ -8,14 +8,28 @@ export function Productos() {
   const [productos, setProductos] = useState([]);
   const [buscar, setBuscar] = useState("");
   const [cargando, setCargando] = useState(true);
+  const [inicio, setInicio] = useState(0);
+  const [cantidad, setCantidad] = useState(5);
+  const [maxReached, setMaxReached] = useState(false);
   useEffect(() => {
     SolicitarProds();
   }, []);
   async function SolicitarProds() {
+    if (maxReached) {
+      return;
+    }
     try {
       setCargando(true);
-      const { data } = await axios.get("/productos");
-      setProductos(data);
+      const { data } = await axios.get("/productos", {
+        params: { inicio, cantidad },
+      });
+      if (!data.length) {
+        setMaxReached(true);
+        setCargando(false);
+        return;
+      }
+      setProductos([...productos, ...data]);
+      setInicio(inicio + cantidad);
       setMsg("");
     } catch (error) {
       console.log(error);

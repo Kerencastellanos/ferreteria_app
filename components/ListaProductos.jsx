@@ -1,5 +1,5 @@
 // @ts-check
-import { FlatList } from "react-native";
+import { ActivityIndicator, FlatList } from "react-native";
 import { uuid } from "../constantes";
 import { Line } from "./Line";
 import { Producto } from "./Producto";
@@ -29,6 +29,11 @@ export function ListaProductos({
       onRefresh={onRefresh}
       horizontal={horizontal}
       data={prods}
+      onEndReached={onRefresh}
+      onEndReachedThreshold={0.1}
+      ListFooterComponent={
+        cargando ? <ActivityIndicator size={"large"} color={"blue"} /> : null
+      }
       keyExtractor={() => uuid()}
       ItemSeparatorComponent={!horizontal && Line}
       renderItem={({ item }) => (
