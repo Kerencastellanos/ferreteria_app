@@ -24,7 +24,7 @@ export function CustomDrawer(props) {
     const { data } = await axios.delete("/auth/logout");
     Alert.alert("Ferreteria Movil", data.error || data.msg);
     await AsyncStorage.removeItem("rToken");
-    setAuth({ rToken: "", aToken: "" });
+    setAuth({ rToken: "", aToken: "", isAuth: false });
   }
   function navegar(screen = "") {
     return (e) => {
